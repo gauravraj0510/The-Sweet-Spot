@@ -5,6 +5,8 @@
     android:id="@+id/remove_item_button"
     android:background="@color/colorAccent"
     android:elevation="3dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="4dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -36,14 +38,16 @@
         android:layout_height="15dp"
         android:layout_marginStart="16dp"
         android:tint="#8000ff"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_free_coupon"
         app:layout_constraintStart_toEndOf="@+id/product_image"
-        app:layout_constraintTop_toBottomOf="@+id/product_title"
+        app:layout_constraintTop_toTopOf="@+id/tv_free_coupon"
         app:srcCompat="@drawable/bookmark_coupon" />
 
     <TextView
         android:id="@+id/tv_free_coupon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
         android:text="Free 2 coupon codes"
         android:textColor="#8000ff"
         android:textSize="12sp"
@@ -68,6 +72,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Rs.5999/-"
+        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="@+id/product_price"
         app:layout_constraintEnd_toStartOf="@+id/product_price" />
 

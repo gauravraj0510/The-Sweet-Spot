@@ -5,6 +5,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -30,8 +31,9 @@ implements NavigationView.OnNavigationItemSelectedListener {
     private FrameLayout frameLayout;
     private static final int HOME_FRAGMENT = 0;
     private static final int CART_FRAGMENT = 1;
-    private static int currentFragment;
+    private static int currentFragment = -1;
     private NavigationView navigationView;
+    private ImageView actionBarLogo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +41,8 @@ implements NavigationView.OnNavigationItemSelectedListener {
         setContentView(R.layout.activity_main);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
+        actionBarLogo = findViewById(R.id.actionbar_logo);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
 
@@ -72,6 +74,7 @@ implements NavigationView.OnNavigationItemSelectedListener {
     public boolean onCreateOptionsMenu(Menu menu) {
 
         if(currentFragment == HOME_FRAGMENT) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
             getMenuInflater().inflate(R.menu.main, menu);
         }
         return true;
@@ -94,6 +97,9 @@ implements NavigationView.OnNavigationItemSelectedListener {
     }
 
     private void myCart() {
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
+        getSupportActionBar().setTitle("My Cart");
+        actionBarLogo.setVisibility(View.GONE);
         invalidateOptionsMenu();
         setFragment(new MyCartFragment(), CART_FRAGMENT);
         navigationView.setCheckedItem(R.id.nav_my_cart);
@@ -104,6 +110,8 @@ implements NavigationView.OnNavigationItemSelectedListener {
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.nav_my_sweet_spot) {
+            actionBarLogo.setVisibility(View.VISIBLE);
+            invalidateOptionsMenu();
             setFragment(new HomeFragment(),HOME_FRAGMENT);
         } else if (id == R.id.nav_my_orders) {
 
@@ -125,9 +133,12 @@ implements NavigationView.OnNavigationItemSelectedListener {
     }
 
     private void setFragment(Fragment fragment, int fragmentNo) {
-        currentFragment = fragmentNo;
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(frameLayout.getId(), fragment);
-        fragmentTransaction.commit();
+        if(fragmentNo != currentFragment) {
+            currentFragment = fragmentNo;
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);
+            fragmentTransaction.replace(frameLayout.getId(), fragment);
+            fragmentTransaction.commit();
+        }
     }
 }
