@@ -31,6 +31,7 @@ implements NavigationView.OnNavigationItemSelectedListener {
     private FrameLayout frameLayout;
     private static final int HOME_FRAGMENT = 0;
     private static final int CART_FRAGMENT = 1;
+    private static final int ORDERS_FRAGMENT = 2;
     private static int currentFragment = -1;
     private NavigationView navigationView;
     private ImageView actionBarLogo;
@@ -90,20 +91,23 @@ implements NavigationView.OnNavigationItemSelectedListener {
         }else if(id == R.id.main_notification_icon){
             return true;
         }else if(id == R.id.main_cart_icon){
-            myCart();
+            goToFragment("My Cart", new MyCartFragment(), CART_FRAGMENT);
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void myCart() {
+    private void goToFragment(String title, Fragment fragment, int fragmentNo) {
         getSupportActionBar().setDisplayShowTitleEnabled(true);
-        getSupportActionBar().setTitle("My Cart");
+        getSupportActionBar().setTitle(title);
         actionBarLogo.setVisibility(View.GONE);
         invalidateOptionsMenu();
-        setFragment(new MyCartFragment(), CART_FRAGMENT);
-        navigationView.setCheckedItem(R.id.nav_my_cart);
+        setFragment(fragment, fragmentNo);
+        if(fragmentNo == CART_FRAGMENT) {
+            navigationView.setCheckedItem(R.id.nav_my_cart);
+        }
     }
+
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -114,11 +118,11 @@ implements NavigationView.OnNavigationItemSelectedListener {
             invalidateOptionsMenu();
             setFragment(new HomeFragment(),HOME_FRAGMENT);
         } else if (id == R.id.nav_my_orders) {
-
+            goToFragment("My Orders", new MyOrdersFragment(), ORDERS_FRAGMENT);
         } else if (id == R.id.nav_my_rewards) {
 
         } else if (id == R.id.nav_my_cart) {
-            myCart();
+            goToFragment("My Cart", new MyCartFragment(), CART_FRAGMENT);
         } else if (id == R.id.nav_my_wishlist) {
 
         } else if (id == R.id.nav_my_account) {

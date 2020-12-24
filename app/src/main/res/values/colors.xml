@@ -6,6 +6,7 @@
     <color name="btnRed">#9f0000</color>
     <color name="btnTextDisable">#50ffffff</color>
     <color name="successGreen">#11a10c</color>
+    <color name="recyclerViewBg">#d6d6d6</color>
 
 
 </resources>
