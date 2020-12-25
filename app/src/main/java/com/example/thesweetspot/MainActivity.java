@@ -32,6 +32,7 @@ implements NavigationView.OnNavigationItemSelectedListener {
     private static final int HOME_FRAGMENT = 0;
     private static final int CART_FRAGMENT = 1;
     private static final int ORDERS_FRAGMENT = 2;
+    private static final int WISHLIST_FRAGMENT = 3;
     private static int currentFragment = -1;
     private NavigationView navigationView;
     private ImageView actionBarLogo;
@@ -67,7 +68,15 @@ implements NavigationView.OnNavigationItemSelectedListener {
         if(drawerLayout.isDrawerOpen(GravityCompat.START)){
             drawerLayout.closeDrawer(GravityCompat.START);
         }else{
-            super.onBackPressed();
+            if(currentFragment == HOME_FRAGMENT){
+                super.onBackPressed();
+            }
+            else{
+                actionBarLogo.setVisibility(View.VISIBLE);
+                invalidateOptionsMenu();
+                setFragment(new HomeFragment(),HOME_FRAGMENT);
+                navigationView.setCheckedItem(R.id.nav_my_sweet_spot);
+            }
         }
     }
 
@@ -124,7 +133,7 @@ implements NavigationView.OnNavigationItemSelectedListener {
         } else if (id == R.id.nav_my_cart) {
             goToFragment("My Cart", new MyCartFragment(), CART_FRAGMENT);
         } else if (id == R.id.nav_my_wishlist) {
-
+            goToFragment("My Wishlist", new MyWishListFragment(), WISHLIST_FRAGMENT);
         } else if (id == R.id.nav_my_account) {
 
         } else if (id == R.id.nav_signout) {
