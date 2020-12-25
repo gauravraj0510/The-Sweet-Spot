@@ -1,5 +1,6 @@
 package com.example.thesweetspot;
 
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -53,13 +54,21 @@ public class MyOrderAdapter extends RecyclerView.Adapter<MyOrderAdapter.ViewHold
         private TextView deliveryStatus;
         private LinearLayout rateNowContainer;
 
-        public ViewHolder(@NonNull View itemView) {
+        public ViewHolder(@NonNull final View itemView) {
             super(itemView);
             productImage = itemView.findViewById(R.id.product_image);
             productTitle = itemView.findViewById(R.id.product_title);
             orderIndicator = itemView.findViewById(R.id.order_indicator);
             deliveryStatus = itemView.findViewById(R.id.order_delivered_date);
             rateNowContainer = itemView.findViewById(R.id.rate_now_container);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent orderDetailsIntent = new Intent(itemView.getContext(), OrderDetailsActivity.class);
+                    itemView.getContext().startActivity(orderDetailsIntent);
+                }
+            });
         }
 
         private void setData(int resource, String title, String deliveredDate, int rating){
