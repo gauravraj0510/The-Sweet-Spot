@@ -1,9 +1,12 @@
 package com.example.thesweetspot;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -33,18 +36,25 @@ implements NavigationView.OnNavigationItemSelectedListener {
     private static final int CART_FRAGMENT = 1;
     private static final int ORDERS_FRAGMENT = 2;
     private static final int WISHLIST_FRAGMENT = 3;
+    private static final int REWARDS_FRAGMENT = 4;
     private static int currentFragment = -1;
     private NavigationView navigationView;
     private ImageView actionBarLogo;
+
+    private Window window;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         actionBarLogo = findViewById(R.id.actionbar_logo);
         setSupportActionBar(toolbar);
+
+        window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
 
@@ -129,6 +139,7 @@ implements NavigationView.OnNavigationItemSelectedListener {
         } else if (id == R.id.nav_my_orders) {
             goToFragment("My Orders", new MyOrdersFragment(), ORDERS_FRAGMENT);
         } else if (id == R.id.nav_my_rewards) {
+            goToFragment("My Rewards", new MyRewardsFragment(), REWARDS_FRAGMENT);
 
         } else if (id == R.id.nav_my_cart) {
             goToFragment("My Cart", new MyCartFragment(), CART_FRAGMENT);
@@ -147,6 +158,14 @@ implements NavigationView.OnNavigationItemSelectedListener {
 
     private void setFragment(Fragment fragment, int fragmentNo) {
         if(fragmentNo != currentFragment) {
+            if(fragmentNo == REWARDS_FRAGMENT){
+                window.setStatusBarColor(Color.parseColor("#5b04b1"));
+                toolbar.setBackgroundColor(Color.parseColor("#5b04b1"));
+            }
+            else{
+                window.setStatusBarColor(getResources().getColor(R.color.colorPrimary));
+                toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            }
             currentFragment = fragmentNo;
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);
