@@ -37,6 +37,7 @@ implements NavigationView.OnNavigationItemSelectedListener {
     private static final int ORDERS_FRAGMENT = 2;
     private static final int WISHLIST_FRAGMENT = 3;
     private static final int REWARDS_FRAGMENT = 4;
+    private static final int ACCOUNT_FRAGMENT = 5;
     private static int currentFragment = -1;
     private NavigationView navigationView;
     private ImageView actionBarLogo;
@@ -146,7 +147,7 @@ implements NavigationView.OnNavigationItemSelectedListener {
         } else if (id == R.id.nav_my_wishlist) {
             goToFragment("My Wishlist", new MyWishListFragment(), WISHLIST_FRAGMENT);
         } else if (id == R.id.nav_my_account) {
-
+            goToFragment("My Account", new MyAccountFragment(), ACCOUNT_FRAGMENT);
         } else if (id == R.id.nav_signout) {
 
         }
