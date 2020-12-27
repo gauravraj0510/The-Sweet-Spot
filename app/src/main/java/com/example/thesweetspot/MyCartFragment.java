@@ -50,7 +50,7 @@ public class MyCartFragment extends Fragment {
         continueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent deliveryIntent = new Intent(getContext(), DeliveryActivity.class);
+                Intent deliveryIntent = new Intent(getContext(), AddAddressActivity.class);
                 getContext().startActivity(deliveryIntent);
             }
         });
