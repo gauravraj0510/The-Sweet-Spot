@@ -5,12 +5,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -28,6 +30,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private static Boolean ALREADY_ADDED_TO_WISH_LIST = false;
     private ViewPager productDetailsViewPager;
     private TabLayout productDetailsTabLayout;
+    private Button buyNowButton;
 
     //////// rating layout
     private LinearLayout rateNowContainer;
@@ -47,7 +50,9 @@ public class ProductDetailsActivity extends AppCompatActivity {
         viewPagerIndicator = findViewById(R.id.viewPager_indicator);
         addToWishListBtn = findViewById(R.id.add_to_wishlist_button);
         productDetailsViewPager = findViewById(R.id.product_details_viewPager);
+        buyNowButton = findViewById(R.id.buy_now_btn);
         productDetailsTabLayout = findViewById(R.id.product_details_tabLayout);
+
 
         List<Integer> productImages = new ArrayList<>();
         productImages.add(R.drawable.mobile_image);
@@ -107,6 +112,13 @@ public class ProductDetailsActivity extends AppCompatActivity {
         }
         //////// rating layout
 
+        buyNowButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent deliveryIntent = new Intent(ProductDetailsActivity.this, DeliveryActivity.class);
+                startActivity(deliveryIntent);
+            }
+        });
 
     }
 
