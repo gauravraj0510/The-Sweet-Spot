@@ -4,16 +4,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.thesweetspot.DeliveryActivity.SELECT_ADDRESS;
+
 public class MyAddressesActivity extends AppCompatActivity {
 
     private RecyclerView myAddressesRecyclerView;
+    private static AddressesAdapter addressesAdapter;
+    private Button deliverHereBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,23 +34,37 @@ public class MyAddressesActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         myAddressesRecyclerView = findViewById(R.id.addresses_recyclerview);
+        deliverHereBtn = findViewById(R.id.deliver_here_btn);
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(RecyclerView.VERTICAL);
         myAddressesRecyclerView.setLayoutManager(layoutManager);
 
         List<AddressesModel> addressesModelList = new ArrayList<>();
-        addressesModelList.add(new AddressesModel("Gaurav Raj", "Address 1","400097"));
-        addressesModelList.add(new AddressesModel("Vaibhav Raj", "Address 2","400026"));
-        addressesModelList.add(new AddressesModel("Ganesh Prasad", "Address 3","400097"));
-        addressesModelList.add(new AddressesModel("Vibha Prasad", "Address 4","400026"));
-        addressesModelList.add(new AddressesModel("Gaurav Raj", "Address 1","400097"));
-        addressesModelList.add(new AddressesModel("Vaibhav Raj", "Address 2","400026"));
-        addressesModelList.add(new AddressesModel("Ganesh Prasad", "Address 3","400097"));
-        addressesModelList.add(new AddressesModel("Vibha Prasad", "Address 4","400026"));
+        addressesModelList.add(new AddressesModel("Gaurav Raj", "Address 1","400097", true));
+        addressesModelList.add(new AddressesModel("Vaibhav Raj", "Address 2","400026", false));
+        addressesModelList.add(new AddressesModel("Ganesh Prasad", "Address 3","400097",false));
+        addressesModelList.add(new AddressesModel("Vibha Prasad", "Address 4","400026",false));
+        addressesModelList.add(new AddressesModel("Gaurav Raj", "Address 1","400097",false));
+        addressesModelList.add(new AddressesModel("Vaibhav Raj", "Address 2","400026",false));
+        addressesModelList.add(new AddressesModel("Ganesh Prasad", "Address 3","400097",false));
+        addressesModelList.add(new AddressesModel("Vibha Prasad", "Address 4","400026",false));
 
-        AddressesAdapter addressesAdapter = new AddressesAdapter(addressesModelList);
+        int mode = getIntent().getIntExtra("MODE", -1);
+        if(mode == SELECT_ADDRESS){
+            deliverHereBtn.setVisibility(View.VISIBLE);
+        }else{
+            deliverHereBtn.setVisibility(View.GONE);
+        }
+        addressesAdapter = new AddressesAdapter(addressesModelList, mode);
         myAddressesRecyclerView.setAdapter(addressesAdapter);
+        ((SimpleItemAnimator) myAddressesRecyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
         addressesAdapter.notifyDataSetChanged();
+    }
+
+    public static void refreshItem(int deselect, int select){
+        addressesAdapter.notifyItemChanged(deselect);
+        addressesAdapter.notifyItemChanged(select);
     }
 
     @Override
