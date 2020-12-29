@@ -80,6 +80,7 @@ implements NavigationView.OnNavigationItemSelectedListener {
             drawerLayout.closeDrawer(GravityCompat.START);
         }else{
             if(currentFragment == HOME_FRAGMENT){
+                currentFragment = -1;
                 super.onBackPressed();
             }
             else{
