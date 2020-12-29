@@ -71,19 +71,15 @@ public class HomeFragment extends Fragment {
 
         List<SliderModel>sliderModelList = new ArrayList<SliderModel>();
 
-        sliderModelList.add(new SliderModel(R.drawable.banner,"#077ae4"));
-        sliderModelList.add(new SliderModel(R.drawable.gift_icon,"#077ae4"));
-        sliderModelList.add(new SliderModel(R.mipmap.logo,"#077ae4"));
 
+        sliderModelList.add(new SliderModel(R.mipmap.logo,"#077ae4"));
         sliderModelList.add(new SliderModel(R.drawable.mail_red,"#077ae4"));
         sliderModelList.add(new SliderModel(R.drawable.mail_green,"#077ae4"));
         sliderModelList.add(new SliderModel(R.drawable.cart_icon,"#077ae4"));
         sliderModelList.add(new SliderModel(R.drawable.home_icon,"#077ae4"));
         sliderModelList.add(new SliderModel(R.drawable.banner,"#077ae4"));
-
         sliderModelList.add(new SliderModel(R.drawable.gift_icon,"#077ae4"));
-        sliderModelList.add(new SliderModel(R.mipmap.logo,"#077ae4"));
-        sliderModelList.add(new SliderModel(R.drawable.mail_red,"#077ae4"));
+
         //////////banner slider test
 
 

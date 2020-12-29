@@ -32,13 +32,16 @@ implements NavigationView.OnNavigationItemSelectedListener {
 
 
     private FrameLayout frameLayout;
+
     private static final int HOME_FRAGMENT = 0;
     private static final int CART_FRAGMENT = 1;
     private static final int ORDERS_FRAGMENT = 2;
     private static final int WISHLIST_FRAGMENT = 3;
     private static final int REWARDS_FRAGMENT = 4;
     private static final int ACCOUNT_FRAGMENT = 5;
-    private static int currentFragment = -1;
+    public static Boolean showCart = false;
+
+    private int currentFragment = -1;
     private NavigationView navigationView;
     private ImageView actionBarLogo;
 
@@ -59,18 +62,23 @@ implements NavigationView.OnNavigationItemSelectedListener {
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         frameLayout = findViewById(R.id.main_frame_layout);
         setFragment(new HomeFragment(), HOME_FRAGMENT);
 
-        navigationView.setCheckedItem(R.id.nav_my_sweet_spot);
-
+        if(showCart){
+            drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            goToFragment("My Cart", new MyCartFragment(), -2);
+        }
+        else{
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+            drawer.addDrawerListener(toggle);
+            toggle.syncState();
+            navigationView.setCheckedItem(R.id.nav_my_sweet_spot);
+        }
     }
 
     @Override
@@ -84,10 +92,16 @@ implements NavigationView.OnNavigationItemSelectedListener {
                 super.onBackPressed();
             }
             else{
-                actionBarLogo.setVisibility(View.VISIBLE);
-                invalidateOptionsMenu();
-                setFragment(new HomeFragment(),HOME_FRAGMENT);
-                navigationView.setCheckedItem(R.id.nav_my_sweet_spot);
+                if(showCart){
+                    showCart = false;
+                    finish();
+                }
+                else {
+                    actionBarLogo.setVisibility(View.VISIBLE);
+                    invalidateOptionsMenu();
+                    setFragment(new HomeFragment(), HOME_FRAGMENT);
+                    navigationView.setCheckedItem(R.id.nav_my_sweet_spot);
+                }
             }
         }
     }
@@ -114,6 +128,13 @@ implements NavigationView.OnNavigationItemSelectedListener {
         }else if(id == R.id.main_cart_icon){
             goToFragment("My Cart", new MyCartFragment(), CART_FRAGMENT);
             return true;
+        }
+        else if(id == android.R.id.home){
+            if(showCart){
+                showCart = false;
+                finish();
+                return  true;
+            }
         }
         return super.onOptionsItemSelected(item);
     }
