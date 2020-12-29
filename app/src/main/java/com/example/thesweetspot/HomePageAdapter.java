@@ -1,5 +1,6 @@
 package com.example.thesweetspot;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Handler;
 import android.view.MotionEvent;
@@ -248,6 +249,14 @@ public class HomePageAdapter extends RecyclerView.Adapter {
 
             if(horizontalProductScrollModelList.size()>8){
                 horizontalLayoutViewAllBtn.setVisibility(View.VISIBLE);
+                horizontalLayoutViewAllBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent viewAllIntent = new Intent(itemView.getContext(), ViewAllActivity.class);
+                        viewAllIntent.putExtra("layout_code",0);
+                        itemView.getContext().startActivity(viewAllIntent);
+                    }
+                });
             }else{
                 horizontalLayoutViewAllBtn.setVisibility(View.INVISIBLE);
             }
@@ -277,6 +286,14 @@ public class HomePageAdapter extends RecyclerView.Adapter {
         private void setGridProductLayout(List<HorizontalProductScrollModel> horizontalProductScrollModelList, String title){
             gridView.setAdapter(new GridProductLayoutAdapter(horizontalProductScrollModelList));
             gridLayoutTitle.setText(title);
+            gridLayoutViewAllBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent viewAllIntent = new Intent(itemView.getContext(), ViewAllActivity.class);
+                    viewAllIntent.putExtra("layout_code",1);
+                    itemView.getContext().startActivity(viewAllIntent);
+                }
+            });
         }
     }
 }
