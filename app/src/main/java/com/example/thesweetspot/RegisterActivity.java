@@ -11,6 +11,7 @@ import android.widget.FrameLayout;
 public class RegisterActivity extends AppCompatActivity {
 
 
+    public static boolean setSignUpFragment = false;
     private FrameLayout frameLayout;
     public static boolean onResetPasswordFragment=false;
     @Override
@@ -19,7 +20,12 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         frameLayout = findViewById(R.id.register_frameLayout);
-        setDefaultFragment(new SignInFragment());
+        if(setSignUpFragment){
+            setSignUpFragment = false;
+            setDefaultFragment(new SignUpFragment());
+        }else {
+            setDefaultFragment(new SignInFragment());
+        }
     }
 
     @Override
