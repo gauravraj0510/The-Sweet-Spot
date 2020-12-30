@@ -13,15 +13,23 @@ import java.util.List;
 public class MyRewardsAdapter extends RecyclerView.Adapter<MyRewardsAdapter.ViewHolder> {
 
     private List<RewardModel> rewardModelList;
+    private boolean useMiniLayout = false;
 
-    public MyRewardsAdapter(List<RewardModel> rewardModelList) {
+    public MyRewardsAdapter(List<RewardModel> rewardModelList, boolean useMiniLayout) {
         this.rewardModelList = rewardModelList;
+        this.useMiniLayout = useMiniLayout;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rewards_item_layout,parent,false);
+        View view;
+        if(useMiniLayout) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.mini_rewards_item_layout, parent, false);
+        }
+        else{
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rewards_item_layout, parent, false);
+        }
         return new ViewHolder(view);
     }
 
@@ -52,10 +60,21 @@ public class MyRewardsAdapter extends RecyclerView.Adapter<MyRewardsAdapter.View
             couponBody = itemView.findViewById(R.id.coupon_body);
         }
 
-        private void setData(String title, String date, String body){
+        private void setData(final String title, final String date, final String body){
             couponTitle.setText(title);
             couponExpiryDate.setText(date);
             couponBody.setText(body);
+            if(useMiniLayout){
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ProductDetailsActivity.couponTitle.setText(title);
+                        ProductDetailsActivity.couponBody.setText(body);
+                        ProductDetailsActivity.couponExpiryDate.setText(date);
+                        ProductDetailsActivity.showDialogRecyclerView();
+                    }
+                });
+            }
         }
     }
 }
