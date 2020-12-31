@@ -45,9 +45,10 @@ public class HomeFragment extends Fragment {
 
     private RecyclerView categoryRecyclerView;
     private CategoryAdapter categoryAdapter;
-    private RecyclerView testing;
+    private RecyclerView homePageRecyclerView;
     private List<CategoryModel> categoryModelList;
     private FirebaseFirestore firebaseFirestore;
+    private HomePageAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -83,68 +84,89 @@ public class HomeFragment extends Fragment {
                     }
                 });
 
-        //////////banner slider test
-
-
-        List<SliderModel>sliderModelList = new ArrayList<SliderModel>();
-
-
-        sliderModelList.add(new SliderModel(R.mipmap.logo,"#077ae4"));
-        sliderModelList.add(new SliderModel(R.drawable.mail_red,"#077ae4"));
-        sliderModelList.add(new SliderModel(R.drawable.mail_green,"#077ae4"));
-        sliderModelList.add(new SliderModel(R.drawable.cart_icon,"#077ae4"));
-        sliderModelList.add(new SliderModel(R.drawable.home_icon,"#077ae4"));
-        sliderModelList.add(new SliderModel(R.drawable.banner,"#077ae4"));
-        sliderModelList.add(new SliderModel(R.drawable.gift_icon,"#077ae4"));
-
-        //////////banner slider test
-
-
-
-
-
-        //////////Horizontal product layout
-
-
-        List<HorizontalProductScrollModel> horizontalProductScrollModelList = new ArrayList<>();
-        horizontalProductScrollModelList.add(new HorizontalProductScrollModel(R.drawable.mobile_image,"Redmi 5A","SD 625 Processor","Rs.5999/-"));
-        horizontalProductScrollModelList.add(new HorizontalProductScrollModel(R.drawable.account_icon,"Redmi 5A","SD 625 Processor","Rs.5999/-"));
-        horizontalProductScrollModelList.add(new HorizontalProductScrollModel(R.drawable.cart_icon,"Redmi 5A","SD 625 Processor","Rs.5999/-"));
-        horizontalProductScrollModelList.add(new HorizontalProductScrollModel(R.drawable.mail_green,"Redmi 5A","SD 625 Processor","Rs.5999/-"));
-        horizontalProductScrollModelList.add(new HorizontalProductScrollModel(R.drawable.mail_red,"Redmi 5A","SD 625 Processor","Rs.5999/-"));
-        horizontalProductScrollModelList.add(new HorizontalProductScrollModel(R.drawable.gift_icon,"Redmi 5A","SD 625 Processor","Rs.5999/-"));
-        horizontalProductScrollModelList.add(new HorizontalProductScrollModel(R.drawable.signout_icon,"Redmi 5A","SD 625 Processor","Rs.5999/-"));
-        horizontalProductScrollModelList.add(new HorizontalProductScrollModel(R.drawable.my_sweet_spot_icon,"Redmi 5A","SD 625 Processor","Rs.5999/-"));
-        horizontalProductScrollModelList.add(new HorizontalProductScrollModel(R.drawable.my_sweet_spot_icon,"Redmi 5A","SD 625 Processor","Rs.5999/-"));
-        horizontalProductScrollModelList.add(new HorizontalProductScrollModel(R.drawable.my_sweet_spot_icon,"Redmi 5A","SD 625 Processor","Rs.5999/-"));
-        //////////Horizontal product layout
+//        ////////banner slider test
+//
+//
+//        ////////banner slider test
+//
+//
+//
+//
+//
+//        ////////Horizontal product layout
+//
+//
+//        List<HorizontalProductScrollModel> horizontalProductScrollModelList = new ArrayList<>();
+//        horizontalProductScrollModelList.add(new HorizontalProductScrollModel(R.drawable.mobile_image,"Redmi 5A","SD 625 Processor","Rs.5999/-"));
+//        horizontalProductScrollModelList.add(new HorizontalProductScrollModel(R.drawable.account_icon,"Redmi 5A","SD 625 Processor","Rs.5999/-"));
+//        horizontalProductScrollModelList.add(new HorizontalProductScrollModel(R.drawable.cart_icon,"Redmi 5A","SD 625 Processor","Rs.5999/-"));
+//        horizontalProductScrollModelList.add(new HorizontalProductScrollModel(R.drawable.mail_green,"Redmi 5A","SD 625 Processor","Rs.5999/-"));
+//        horizontalProductScrollModelList.add(new HorizontalProductScrollModel(R.drawable.mail_red,"Redmi 5A","SD 625 Processor","Rs.5999/-"));
+//        horizontalProductScrollModelList.add(new HorizontalProductScrollModel(R.drawable.gift_icon,"Redmi 5A","SD 625 Processor","Rs.5999/-"));
+//        horizontalProductScrollModelList.add(new HorizontalProductScrollModel(R.drawable.signout_icon,"Redmi 5A","SD 625 Processor","Rs.5999/-"));
+//        horizontalProductScrollModelList.add(new HorizontalProductScrollModel(R.drawable.my_sweet_spot_icon,"Redmi 5A","SD 625 Processor","Rs.5999/-"));
+//        horizontalProductScrollModelList.add(new HorizontalProductScrollModel(R.drawable.my_sweet_spot_icon,"Redmi 5A","SD 625 Processor","Rs.5999/-"));
+//        horizontalProductScrollModelList.add(new HorizontalProductScrollModel(R.drawable.my_sweet_spot_icon,"Redmi 5A","SD 625 Processor","Rs.5999/-"));
+//      ////////Horizontal product layout
 
 
         //////////testing recycler view
-        testing = view.findViewById(R.id.home_page_recyclerView);
+        homePageRecyclerView = view.findViewById(R.id.home_page_recyclerView);
         LinearLayoutManager testingLayoutManager = new LinearLayoutManager(getContext());
         testingLayoutManager.setOrientation(RecyclerView.VERTICAL);
-        testing.setLayoutManager(testingLayoutManager);
+        homePageRecyclerView.setLayoutManager(testingLayoutManager);
 
-        List<HomePageModel> homePageModelList = new ArrayList<>();
+        final List<HomePageModel> homePageModelList = new ArrayList<>();
 
-        homePageModelList.add(new HomePageModel(0,sliderModelList));
-        homePageModelList.add(new HomePageModel(1,R.drawable.stripad,"#000000"));
-        homePageModelList.add(new HomePageModel(2,"Deals of the day!",horizontalProductScrollModelList));
-        homePageModelList.add(new HomePageModel(3,"Trending!",horizontalProductScrollModelList));
-        homePageModelList.add(new HomePageModel(1,R.drawable.stripad,"#000000"));
-        homePageModelList.add(new HomePageModel(2,"Deals of the day!",horizontalProductScrollModelList));
-        homePageModelList.add(new HomePageModel(3,"Trending!",horizontalProductScrollModelList));
-        homePageModelList.add(new HomePageModel(1,R.drawable.stripad,"#000000"));
-        homePageModelList.add(new HomePageModel(2,"Deals of the day!",horizontalProductScrollModelList));
-        homePageModelList.add(new HomePageModel(3,"Trending!",horizontalProductScrollModelList));
-        homePageModelList.add(new HomePageModel(1,R.drawable.stripad,"#000000"));
-        homePageModelList.add(new HomePageModel(2,"Deals of the day!",horizontalProductScrollModelList));
-        homePageModelList.add(new HomePageModel(3,"Trending!",horizontalProductScrollModelList));
+        adapter = new HomePageAdapter(homePageModelList);
+        homePageRecyclerView.setAdapter(adapter);
 
-        HomePageAdapter adapter = new HomePageAdapter(homePageModelList);
-        testing.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+        firebaseFirestore.collection("CATEGORIES")
+                .document("HOME")
+                .collection("TOP_DEALS")
+                .orderBy("index").get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            for(QueryDocumentSnapshot documentSnapshot : task.getResult()){
+
+                                if((long)documentSnapshot.get("view_type") == 0){
+
+                                    List<SliderModel> sliderModelList = new ArrayList<>();
+                                    long no_of_banners = (long)documentSnapshot.get("no_of_banners");
+                                    for(long x = 1; x < no_of_banners + 1; x++){
+                                        sliderModelList.add(new SliderModel(documentSnapshot.get("banner_"+x).toString(),
+                                                documentSnapshot.get("banner_"+x+"_background").toString()));
+                                    }
+                                    homePageModelList.add(new HomePageModel(0,sliderModelList));
+
+                                }else if((long)documentSnapshot.get("view_type") == 1){
+
+                                    try {
+                                        homePageModelList.add(new HomePageModel(1, documentSnapshot.get("strip_ad_banner").toString(),
+                                                documentSnapshot.get("background").toString()));
+                                    }
+                                    catch (Exception e){
+                                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+
+                                }else if((long)documentSnapshot.get("view_type") == 2){
+
+                                }else if((long)documentSnapshot.get("view_type") == 3){
+
+                                }
+
+                            }
+                            adapter.notifyDataSetChanged();
+                        }
+                        else {
+                            String error = task.getException().getMessage();
+                            Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
         //////////testing recycler view
 
         return view;

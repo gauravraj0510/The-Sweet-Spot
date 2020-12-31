@@ -1,19 +1,19 @@
 package com.example.thesweetspot;
 
 public class SliderModel {
-    private int banner;
+    private String banner;
     private String backgroundColour;
 
-    public SliderModel(int banner, String backgroundColour) {
+    public SliderModel(String banner, String backgroundColour) {
         this.banner = banner;
         this.backgroundColour = backgroundColour;
     }
 
-    public int getBanner() {
+    public String getBanner() {
         return banner;
     }
 
-    public void setBanner(int banner) {
+    public void setBanner(String banner) {
         this.banner = banner;
     }
 

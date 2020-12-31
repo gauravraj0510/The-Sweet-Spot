@@ -33,18 +33,18 @@ public class HomePageModel {
     //////////banner slider test
 
     //////////Strip ad layout
-    private int resource;
+    private String resource;
     private String backgroundColour;
 
-    public HomePageModel(int type, int resource, String backgroundColour) {
+    public HomePageModel(int type, String resource, String backgroundColour) {
         this.type = type;
         this.resource = resource;
         this.backgroundColour = backgroundColour;
     }
-    public int getResource() {
+    public String getResource() {
         return resource;
     }
-    public void setResource(int resource) {
+    public void setResource(String resource) {
         this.resource = resource;
     }
     public String getBackgroundColour() {

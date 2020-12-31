@@ -19,6 +19,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -90,7 +93,7 @@ public class HomePageAdapter extends RecyclerView.Adapter {
                 break;
 
             case HomePageModel.STRIP_AD_BANNER:
-                int resource = homePageModelList.get(position).getResource();
+                String resource = homePageModelList.get(position).getResource();
                 String color = homePageModelList.get(position).getBackgroundColour();
                 ((StripAdBannerViewHolder)viewHolder).setStripAd(resource,color);
                 break;
@@ -143,10 +146,10 @@ public class HomePageAdapter extends RecyclerView.Adapter {
             for(int x = 0; x < sliderModelList.size(); x++){
                 arrangedList.add(x,sliderModelList.get(x));
             }
-            arrangedList.add(0,sliderModelList.get(sliderModelList.size()-2));
-            arrangedList.add(1,sliderModelList.get(sliderModelList.size()-1));
-            arrangedList.add(sliderModelList.get(0));
-            arrangedList.add(sliderModelList.get(1));
+//            arrangedList.add(1,sliderModelList.get(sliderModelList.size()-2));
+//            arrangedList.add(2,sliderModelList.get(sliderModelList.size()-1));
+//            arrangedList.add(sliderModelList.get(0));
+//            arrangedList.add(sliderModelList.get(1));
 
             SliderAdapter sliderAdapter = new SliderAdapter(arrangedList);
             bannerSliderViewPager.setAdapter(sliderAdapter);
@@ -241,8 +244,8 @@ public class HomePageAdapter extends RecyclerView.Adapter {
             stripAdContainer = itemView.findViewById(R.id.strip_ad_container);
         }
 
-        private void setStripAd(int resource, String color) {
-            stripAdImage.setImageResource(resource);
+        private void setStripAd(String resource, String color) {
+            Glide.with(itemView.getContext()).load(resource).apply(new RequestOptions().placeholder(R.drawable.stripad)).into(stripAdImage);
             stripAdContainer.setBackgroundColor(Color.parseColor(color));
         }
     }
