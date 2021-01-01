@@ -1,8 +1,12 @@
 package com.example.thesweetspot;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,7 +17,9 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
@@ -38,6 +44,7 @@ implements NavigationView.OnNavigationItemSelectedListener {
 
 
     private FrameLayout frameLayout;
+    private ImageView noInternetConnection;
 
     private static final int HOME_FRAGMENT = 0;
     private static final int CART_FRAGMENT = 1;
@@ -72,23 +79,33 @@ implements NavigationView.OnNavigationItemSelectedListener {
         navigationView.setNavigationItemSelectedListener(this);
 
         frameLayout = findViewById(R.id.main_frame_layout);
-        setFragment(new HomeFragment(), HOME_FRAGMENT);
+        noInternetConnection = findViewById(R.id.no_internet_connection);
 
-        if(showCart){
-            drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            goToFragment("My Cart", new MyCartFragment(), -2);
-        }
-        else{
-            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-            drawer.addDrawerListener(toggle);
-            toggle.syncState();
-            navigationView.setCheckedItem(R.id.nav_my_sweet_spot);
+
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if(connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected()) {
+            setFragment(new HomeFragment(), HOME_FRAGMENT);
+            noInternetConnection.setVisibility(View.GONE);
+            if (showCart) {
+                drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                goToFragment("My Cart", new MyCartFragment(), -2);
+            } else {
+                ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                drawer.addDrawerListener(toggle);
+                toggle.syncState();
+                navigationView.setCheckedItem(R.id.nav_my_sweet_spot);
+            }
+        }else{
+            Glide.with(this).load(R.drawable.mobile_image).into(noInternetConnection);
+            noInternetConnection.setVisibility(View.VISIBLE);
         }
     }
 
     @Override
     public void onBackPressed() {
+        noInternetConnection.setVisibility(View.GONE);
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
         if(drawerLayout.isDrawerOpen(GravityCompat.START)){
             drawerLayout.closeDrawer(GravityCompat.START);
