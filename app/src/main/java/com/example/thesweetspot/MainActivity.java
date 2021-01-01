@@ -98,7 +98,7 @@ implements NavigationView.OnNavigationItemSelectedListener {
                 navigationView.setCheckedItem(R.id.nav_my_sweet_spot);
             }
         }else{
-            Glide.with(this).load(R.drawable.mobile_image).into(noInternetConnection);
+            Glide.with(this).load(R.drawable.no_internet_gif).into(noInternetConnection);
             noInternetConnection.setVisibility(View.VISIBLE);
         }
     }
