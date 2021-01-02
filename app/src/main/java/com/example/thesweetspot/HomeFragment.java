@@ -1,6 +1,8 @@
 package com.example.thesweetspot;
 
+import android.content.Context;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -21,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -50,42 +53,53 @@ public class HomeFragment extends Fragment {
     private CategoryAdapter categoryAdapter;
     private RecyclerView homePageRecyclerView;
     private HomePageAdapter adapter;
+    private ImageView noInternetConnection;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+        noInternetConnection = view.findViewById(R.id.no_internet_connection);
 
-        categoryRecyclerView = view.findViewById(R.id.category_recyclerView);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        layoutManager.setOrientation(RecyclerView.HORIZONTAL);
-        categoryRecyclerView.setLayoutManager(layoutManager);
+        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        categoryAdapter = new CategoryAdapter(categoryModelList);
+        if(connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected()) {
+            noInternetConnection.setVisibility(View.GONE);
+            categoryRecyclerView = view.findViewById(R.id.category_recyclerView);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+            layoutManager.setOrientation(RecyclerView.HORIZONTAL);
+            categoryRecyclerView.setLayoutManager(layoutManager);
 
-        categoryRecyclerView.setAdapter(categoryAdapter);
+            categoryAdapter = new CategoryAdapter(categoryModelList);
 
-        if(categoryModelList.size() == 0){
-            loadCategories(categoryAdapter, getContext());
-        }
-        else {
-            categoryAdapter.notifyDataSetChanged();
-        }
+            categoryRecyclerView.setAdapter(categoryAdapter);
 
-        homePageRecyclerView = view.findViewById(R.id.home_page_recyclerView);
-        LinearLayoutManager testingLayoutManager = new LinearLayoutManager(getContext());
-        testingLayoutManager.setOrientation(RecyclerView.VERTICAL);
-        homePageRecyclerView.setLayoutManager(testingLayoutManager);
+            if(categoryModelList.size() == 0){
+                loadCategories(categoryAdapter, getContext());
+            }
+            else {
+                categoryAdapter.notifyDataSetChanged();
+            }
 
-        adapter = new HomePageAdapter(homePageModelList);
-        homePageRecyclerView.setAdapter(adapter);
+            homePageRecyclerView = view.findViewById(R.id.home_page_recyclerView);
+            LinearLayoutManager testingLayoutManager = new LinearLayoutManager(getContext());
+            testingLayoutManager.setOrientation(RecyclerView.VERTICAL);
+            homePageRecyclerView.setLayoutManager(testingLayoutManager);
 
-        if(homePageModelList.size() == 0){
-            loadFragmentData(adapter, getContext());
-        }
-        else {
-            adapter.notifyDataSetChanged();
+            adapter = new HomePageAdapter(homePageModelList);
+            homePageRecyclerView.setAdapter(adapter);
+
+            if(homePageModelList.size() == 0){
+                loadFragmentData(adapter, getContext());
+            }
+            else {
+                adapter.notifyDataSetChanged();
+            }
+
+        }else{
+            Glide.with(this).load(R.drawable.no_internet_gif).into(noInternetConnection);
+            noInternetConnection.setVisibility(View.VISIBLE);
         }
 
         return view;

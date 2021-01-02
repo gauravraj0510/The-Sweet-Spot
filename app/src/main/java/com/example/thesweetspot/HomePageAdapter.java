@@ -313,7 +313,7 @@ public class HomePageAdapter extends RecyclerView.Adapter {
             container = itemView.findViewById(R.id.grid_layout);
         }
 
-        private void setGridProductLayout(List<HorizontalProductScrollModel> horizontalProductScrollModelList, String title, String color){
+        private void setGridProductLayout(final List<HorizontalProductScrollModel> horizontalProductScrollModelList, final String title, String color){
 
             container.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(color)));
             gridLayoutTitle.setText(title);
@@ -327,7 +327,7 @@ public class HomePageAdapter extends RecyclerView.Adapter {
                 Glide.with(itemView.getContext()).load(horizontalProductScrollModelList.get(x).getProductImage()).apply(new RequestOptions().placeholder(R.drawable.mobile_image)).into(productImage);
                 productTitle.setText(horizontalProductScrollModelList.get(x).getProductTitle());
                 productDescription.setText(horizontalProductScrollModelList.get(x).getProductDescription());
-                productPrice.setText(horizontalProductScrollModelList.get(x).getProductPrice());
+                productPrice.setText("Rs." +horizontalProductScrollModelList.get(x).getProductPrice()+"/-");
 
                 gridProductLayout.getChildAt(x).setBackgroundColor(Color.WHITE);
 
@@ -343,8 +343,10 @@ public class HomePageAdapter extends RecyclerView.Adapter {
             gridLayoutViewAllBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    ViewAllActivity.horizontalProductScrollModelList = horizontalProductScrollModelList;
                     Intent viewAllIntent = new Intent(itemView.getContext(), ViewAllActivity.class);
                     viewAllIntent.putExtra("layout_code",1);
+                    viewAllIntent.putExtra("title",title);
                     itemView.getContext().startActivity(viewAllIntent);
                 }
             });
