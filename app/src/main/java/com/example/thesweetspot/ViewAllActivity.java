@@ -19,6 +19,7 @@ public class ViewAllActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private GridView gridView;
     public static List<HorizontalProductScrollModel> horizontalProductScrollModelList;
+    public static List<WishListModel> wishListModelList;
 
 
     @Override
@@ -42,13 +43,6 @@ public class ViewAllActivity extends AppCompatActivity {
             LinearLayoutManager layoutManager = new LinearLayoutManager(this);
             layoutManager.setOrientation(RecyclerView.VERTICAL);
             recyclerView.setLayoutManager(layoutManager);
-
-            List<WishListModel> wishListModelList = new ArrayList<>();
-            wishListModelList.add(new WishListModel(R.drawable.mobile_image, "Pixel 2", 1, "3", 45, "Rs.4999/", "Rs.5999/-", "Cash on Delivery available"));
-            wishListModelList.add(new WishListModel(R.drawable.mobile_image, "Pixel 2", 0, "4", 45, "Rs.4999/", "Rs.5999/-", "Cash on Delivery available"));
-            wishListModelList.add(new WishListModel(R.drawable.mobile_image, "Pixel 2", 2, "2.5", 45, "Rs.4999/", "Rs.5999/-", "Cash on Delivery available"));
-            wishListModelList.add(new WishListModel(R.drawable.mobile_image, "Pixel 2", 4, "4.5", 45, "Rs.4999/", "Rs.5999/-", "Cash on Delivery available"));
-            wishListModelList.add(new WishListModel(R.drawable.mobile_image, "Pixel 2", 0, "5", 45, "Rs.4999/", "Rs.5999/-", "Cash on Delivery available"));
 
             WishListAdapter adapter = new WishListAdapter(wishListModelList, false);
             recyclerView.setAdapter(adapter);
