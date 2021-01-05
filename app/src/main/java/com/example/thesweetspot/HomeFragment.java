@@ -37,9 +37,10 @@ import java.util.TimerTask;
 
 import static com.example.thesweetspot.DBqueries.categoryModelList;
 import static com.example.thesweetspot.DBqueries.firebaseFirestore;
-import static com.example.thesweetspot.DBqueries.homePageModelList;
+import static com.example.thesweetspot.DBqueries.lists;
 import static com.example.thesweetspot.DBqueries.loadCategories;
 import static com.example.thesweetspot.DBqueries.loadFragmentData;
+import static com.example.thesweetspot.DBqueries.loadedCategoriesName;
 
 
 public class HomeFragment extends Fragment {
@@ -87,15 +88,17 @@ public class HomeFragment extends Fragment {
             testingLayoutManager.setOrientation(RecyclerView.VERTICAL);
             homePageRecyclerView.setLayoutManager(testingLayoutManager);
 
-            adapter = new HomePageAdapter(homePageModelList);
-            homePageRecyclerView.setAdapter(adapter);
-
-            if(homePageModelList.size() == 0){
-                loadFragmentData(adapter, getContext());
+            if(lists.size() == 0){
+                loadedCategoriesName.add("HOME");
+                lists.add(new ArrayList<HomePageModel>());
+                adapter = new HomePageAdapter(lists.get(0));
+                loadFragmentData(adapter, getContext(),0, "HOME");
             }
             else {
+                adapter = new HomePageAdapter(lists.get(0));
                 adapter.notifyDataSetChanged();
             }
+            homePageRecyclerView.setAdapter(adapter);
 
         }else{
             Glide.with(this).load(R.drawable.no_internet_gif).into(noInternetConnection);
