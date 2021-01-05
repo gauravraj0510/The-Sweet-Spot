@@ -20,9 +20,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +45,16 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private Button buyNowButton;
     private Button couponRedeemButton;
 
+    private TextView productTitle;
+    private TextView productPrice;
+    private TextView cutPrice;
+    private TextView tvCodIndicator;
+    private ImageView codIndicator;
+    private TextView averageRatingMiniView;
+    private TextView totalRatingsMiniView;
+    private TextView rewardTitle;
+    private TextView rewardBody;
+
     //////Coupon Dialog
     public static TextView couponTitle;
     public static TextView couponBody;
@@ -51,6 +66,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
     //////// rating layout
     private LinearLayout rateNowContainer;
     //////// rating layout
+
+    private FirebaseFirestore firebaseFirestore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,15 +86,60 @@ public class ProductDetailsActivity extends AppCompatActivity {
         buyNowButton = findViewById(R.id.buy_now_btn);
         productDetailsTabLayout = findViewById(R.id.product_details_tabLayout);
         couponRedeemButton = findViewById(R.id.coupon_redemption_button);
+        productPrice = findViewById(R.id.product_price);
+        cutPrice = findViewById(R.id.cutted_price);
+        productTitle = findViewById(R.id.product_title);
+        averageRatingMiniView = findViewById(R.id.tv_product_rating_miniView);
+        totalRatingsMiniView = findViewById(R.id.total_ratings_miniView);
+        tvCodIndicator = findViewById(R.id.tv_cod_indicator);
+        codIndicator = findViewById(R.id.cod_indicator_imageView);
+        rewardTitle = findViewById(R.id.reward_title);
+        rewardBody = findViewById(R.id.reward_body);
 
-        List<Integer> productImages = new ArrayList<>();
-        productImages.add(R.drawable.mobile_image);
-        productImages.add(R.drawable.banner);
-        productImages.add(R.drawable.stripad);
-        productImages.add(R.drawable.gift_icon);
+        firebaseFirestore = FirebaseFirestore.getInstance();
 
-        ProductImagesAdapter productImagesAdapter = new ProductImagesAdapter(productImages);
-        productImagesViewPager.setAdapter(productImagesAdapter);
+        final List<String> productImages = new ArrayList<>();
+
+        firebaseFirestore.collection("PRODUCTS").document("gZKCoU6VBOZ1Re0sankj").get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()){
+
+                            DocumentSnapshot documentSnapshot = task.getResult();
+                            for(long x=1; x < (long)documentSnapshot.get("no_of_product_images")+1 ; x++){
+                                productImages.add(documentSnapshot.get("product_image_"+x).toString());
+                            }
+                            ProductImagesAdapter productImagesAdapter = new ProductImagesAdapter(productImages);
+                            productImagesViewPager.setAdapter(productImagesAdapter);
+
+                            productTitle.setText(documentSnapshot.get("product_title").toString());
+                            productPrice.setText("Rs."+documentSnapshot.get("product_price").toString()+"/-");
+                            cutPrice.setText("Rs."+documentSnapshot.get("cut_price").toString()+"/-");
+                            averageRatingMiniView.setText(documentSnapshot.get("average_rating").toString());
+                            long totalRating = (long)documentSnapshot.get("total_ratings");
+                            totalRatingsMiniView.setText((int) totalRating+ " ratings");
+                            if((boolean)documentSnapshot.get("COD")){
+                                codIndicator.setVisibility(View.VISIBLE);
+                                tvCodIndicator.setVisibility(View.VISIBLE);
+                            }
+                            else{
+                                codIndicator.setVisibility(View.INVISIBLE);
+                                tvCodIndicator.setVisibility(View.INVISIBLE);
+                            }
+                            long freeCoupon = (long)documentSnapshot.get("free_coupons");
+                            rewardTitle.setText((int)freeCoupon+" "+documentSnapshot.get("free_coupon_title").toString());
+                            rewardBody.setText(documentSnapshot.get("free_coupon_body").toString());
+                            if((boolean)documentSnapshot.get("use_tab_layout")){
+
+                            }
+                        }
+                        else{
+                            String error = task.getException().getMessage();
+                            Toast.makeText(ProductDetailsActivity.this, error, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
 
         viewPagerIndicator.setupWithViewPager(productImagesViewPager,true);
 
