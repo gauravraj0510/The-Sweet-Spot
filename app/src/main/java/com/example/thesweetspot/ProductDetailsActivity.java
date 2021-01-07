@@ -77,6 +77,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private TextView totalRatingsFigure;
     private LinearLayout ratingsNumberContainer;
     private LinearLayout ratingsProgressBarContainer;
+    private TextView averageRating;
     //////// rating layout
 
     //////Coupon Dialog
@@ -122,6 +123,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
         ratingsNumberContainer = findViewById(R.id.ratings_number_container);
         ratingsProgressBarContainer = findViewById(R.id.ratings_progress_bar_container);
         totalRatingsFigure = findViewById(R.id.total_ratings_figure);
+        averageRating = findViewById(R.id.average_rating);
 
         firebaseFirestore = FirebaseFirestore.getInstance();
 
@@ -182,12 +184,13 @@ public class ProductDetailsActivity extends AppCompatActivity {
                             for(int x = 0; x < 5; x++){
                                 TextView rating = (TextView)ratingsNumberContainer.getChildAt(x);
                                 long tempStarRatingNo = (long)documentSnapshot.get((5-x)+"_star");
-//                                rating.setText(Integer.parseInt(String.valueOf((long)documentSnapshot.get((5-x)+"_star"))));
+                                rating.setText(String.valueOf((long)documentSnapshot.get((5-x)+"_star")));
                                 ProgressBar progressBar = (ProgressBar)ratingsProgressBarContainer.getChildAt(x);
                                 progressBar.setMax((int)tempTotalRatings);
-                                progressBar.setProgress(5);
+                                progressBar.setProgress(Integer.parseInt(String.valueOf((long)documentSnapshot.get((5-x)+"_star"))));
                             }
                             totalRatingsFigure.setText(String.valueOf((long)documentSnapshot.get("total_ratings")));
+                            averageRating.setText(documentSnapshot.get("average_rating").toString());
                             productDetailsViewPager.setAdapter(new ProductDetailsAdapter(getSupportFragmentManager(),0,productDetailsTabLayout.getTabCount(), productDescription, productOtherDetails, productSpecificationModelList));
 
 
