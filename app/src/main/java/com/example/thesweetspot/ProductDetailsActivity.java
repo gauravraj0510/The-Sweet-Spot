@@ -28,6 +28,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -93,6 +95,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     private Dialog signInDialog;
 
+    private FirebaseUser currentUser;
 
     private FirebaseFirestore firebaseFirestore;
 
@@ -136,7 +139,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         final List<String> productImages = new ArrayList<>();
 
-        firebaseFirestore.collection("PRODUCTS").document("gZKCoU6VBOZ1Re0sankj").get()
+        firebaseFirestore.collection("PRODUCTS").document(getIntent().getStringExtra("PRODUCT_ID")).get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -214,7 +217,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
         addToWishListBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(DBqueries.currentUser == null){
+                if(currentUser == null){
                     signInDialog.show();
                 }
                 else {
@@ -254,7 +257,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
             rateNowContainer.getChildAt(x).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(DBqueries.currentUser == null){
+                    if(currentUser == null){
                         signInDialog.show();
                     }else {
                         setRating(starPosition);
@@ -267,7 +270,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
         buyNowButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(DBqueries.currentUser == null){
+                if(currentUser == null){
                     signInDialog.show();
                 }
                 else {
@@ -280,7 +283,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
         addToCartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(DBqueries.currentUser == null){
+                if(currentUser == null){
                     signInDialog.show();
                 }
                 else {
@@ -372,10 +375,18 @@ public class ProductDetailsActivity extends AppCompatActivity {
         });
         /////////sign in dialog
 
-        if(DBqueries.currentUser == null){
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if(currentUser == null){
             couponRedemtionLayout.setVisibility(View.GONE);
         }
-
+        else {
+            couponRedemtionLayout.setVisibility(View.VISIBLE);
+        }
     }
 
     public static void showDialogRecyclerView(){
@@ -417,7 +428,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
         }else if(id == R.id.main_search_icon){
             return true;
         }else if(id == R.id.main_cart_icon){
-            if(DBqueries.currentUser == null){
+            if(currentUser == null){
                 signInDialog.show();
             }
             else {

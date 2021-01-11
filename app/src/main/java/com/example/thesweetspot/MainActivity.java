@@ -23,6 +23,8 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -61,6 +63,10 @@ implements NavigationView.OnNavigationItemSelectedListener {
     private Window window;
     private Toolbar toolbar;
 
+    private FirebaseUser currentUser;
+
+    public static DrawerLayout drawer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,7 +79,7 @@ implements NavigationView.OnNavigationItemSelectedListener {
         window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer = findViewById(R.id.drawer_layout);
 
         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -91,13 +97,6 @@ implements NavigationView.OnNavigationItemSelectedListener {
             drawer.addDrawerListener(toggle);
             toggle.syncState();
             navigationView.setCheckedItem(R.id.nav_my_sweet_spot);
-        }
-
-        if(DBqueries.currentUser == null){
-            navigationView.getMenu().getItem(navigationView.getMenu().size() -1).setEnabled(false);
-        }
-        else{
-            navigationView.getMenu().getItem(navigationView.getMenu().size() -1).setEnabled(true);
         }
 
         signInDialog = new Dialog(MainActivity.this);
@@ -129,6 +128,18 @@ implements NavigationView.OnNavigationItemSelectedListener {
                 startActivity(registerIntent);
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if(currentUser == null){
+            navigationView.getMenu().getItem(navigationView.getMenu().size() -1).setEnabled(false);
+        }
+        else{
+            navigationView.getMenu().getItem(navigationView.getMenu().size() -1).setEnabled(true);
+        }
     }
 
     @Override
@@ -177,7 +188,7 @@ implements NavigationView.OnNavigationItemSelectedListener {
             return true;
         }else if(id == R.id.main_cart_icon){
 
-            if(DBqueries.currentUser == null) {
+            if(currentUser == null) {
                 signInDialog.show();
             }else {
                 goToFragment("My Cart", new MyCartFragment(), CART_FRAGMENT);
@@ -205,13 +216,11 @@ implements NavigationView.OnNavigationItemSelectedListener {
         }
     }
 
-
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         DrawerLayout drawer =  findViewById(R.id.drawer_layout);
 
-        if(DBqueries.currentUser != null) {
+        if(currentUser != null) {
 
             int id = item.getItemId();
             if (id == R.id.nav_my_sweet_spot) {
@@ -230,7 +239,10 @@ implements NavigationView.OnNavigationItemSelectedListener {
             } else if (id == R.id.nav_my_account) {
                 goToFragment("My Account", new MyAccountFragment(), ACCOUNT_FRAGMENT);
             } else if (id == R.id.nav_signout) {
-
+                FirebaseAuth.getInstance().signOut();
+                Intent registerIntent = new Intent(MainActivity.this, RegisterActivity.class);
+                startActivity(registerIntent);
+                finish();
             }
             drawer.closeDrawer(GravityCompat.START);
             return true;

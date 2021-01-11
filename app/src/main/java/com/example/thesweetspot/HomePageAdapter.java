@@ -343,10 +343,12 @@ public class HomePageAdapter extends RecyclerView.Adapter {
                 gridProductLayout.getChildAt(x).setBackgroundColor(Color.WHITE);
 
                 if(!title.equals("")) {
+                    final int finalX = x;
                     gridProductLayout.getChildAt(x).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             Intent prodDetIntent = new Intent(itemView.getContext(), ProductDetailsActivity.class);
+                            prodDetIntent.putExtra("PRODUCT_ID", horizontalProductScrollModelList.get(finalX).getProductID());
                             itemView.getContext().startActivity(prodDetIntent);
                         }
                     });
