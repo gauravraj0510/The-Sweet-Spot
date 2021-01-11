@@ -56,6 +56,7 @@ implements NavigationView.OnNavigationItemSelectedListener {
     private int currentFragment = -1;
     private NavigationView navigationView;
     private ImageView actionBarLogo;
+    private Dialog signInDialog;
 
     private Window window;
     private Toolbar toolbar;
@@ -92,7 +93,42 @@ implements NavigationView.OnNavigationItemSelectedListener {
             navigationView.setCheckedItem(R.id.nav_my_sweet_spot);
         }
 
+        if(DBqueries.currentUser == null){
+            navigationView.getMenu().getItem(navigationView.getMenu().size() -1).setEnabled(false);
+        }
+        else{
+            navigationView.getMenu().getItem(navigationView.getMenu().size() -1).setEnabled(true);
+        }
 
+        signInDialog = new Dialog(MainActivity.this);
+        signInDialog.setContentView(R.layout.sign_in_dialog);
+        signInDialog.setCancelable(true);
+        signInDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        Button dialogSignInBtn = signInDialog.findViewById(R.id.sign_in_btn);
+        Button dialogSignUpBtn = signInDialog.findViewById(R.id.sign_up_btn);
+
+        final Intent registerIntent = new Intent(MainActivity.this, RegisterActivity.class);
+        dialogSignInBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SignInFragment.disableCloseButton = true;
+                SignUpFragment.disableCloseButton = true;
+                signInDialog.dismiss();
+                setSignUpFragment = false;
+                startActivity(registerIntent);
+            }
+        });
+        dialogSignUpBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SignInFragment.disableCloseButton = true;
+                SignUpFragment.disableCloseButton = true;
+                signInDialog.dismiss();
+                setSignUpFragment = true;
+                startActivity(registerIntent);
+            }
+        });
     }
 
     @Override
@@ -140,33 +176,12 @@ implements NavigationView.OnNavigationItemSelectedListener {
         }else if(id == R.id.main_notification_icon){
             return true;
         }else if(id == R.id.main_cart_icon){
-            final Dialog signInDialog = new Dialog(MainActivity.this);
-            signInDialog.setContentView(R.layout.sign_in_dialog);
-            signInDialog.setCancelable(true);
-            signInDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-            Button dialogSignInBtn = signInDialog.findViewById(R.id.sign_in_btn);
-            Button dialogSignUpBtn = signInDialog.findViewById(R.id.sign_up_btn);
-
-            final Intent registerIntent = new Intent(MainActivity.this, RegisterActivity.class);
-            dialogSignInBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    signInDialog.dismiss();
-                    setSignUpFragment = false;
-                    startActivity(registerIntent);
-                }
-            });
-            dialogSignUpBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    signInDialog.dismiss();
-                    setSignUpFragment = true;
-                    startActivity(registerIntent);
-                }
-            });
-            signInDialog.show();
-//            goToFragment("My Cart", new MyCartFragment(), CART_FRAGMENT);
+            if(DBqueries.currentUser == null) {
+                signInDialog.show();
+            }else {
+                goToFragment("My Cart", new MyCartFragment(), CART_FRAGMENT);
+            }
             return true;
         }
         else if(id == android.R.id.home){
@@ -194,29 +209,37 @@ implements NavigationView.OnNavigationItemSelectedListener {
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.nav_my_sweet_spot) {
-            actionBarLogo.setVisibility(View.VISIBLE);
-            invalidateOptionsMenu();
-            setFragment(new HomeFragment(),HOME_FRAGMENT);
-        } else if (id == R.id.nav_my_orders) {
-            goToFragment("My Orders", new MyOrdersFragment(), ORDERS_FRAGMENT);
-        } else if (id == R.id.nav_my_rewards) {
-            goToFragment("My Rewards", new MyRewardsFragment(), REWARDS_FRAGMENT);
-
-        } else if (id == R.id.nav_my_cart) {
-            goToFragment("My Cart", new MyCartFragment(), CART_FRAGMENT);
-        } else if (id == R.id.nav_my_wishlist) {
-            goToFragment("My Wishlist", new MyWishListFragment(), WISHLIST_FRAGMENT);
-        } else if (id == R.id.nav_my_account) {
-            goToFragment("My Account", new MyAccountFragment(), ACCOUNT_FRAGMENT);
-        } else if (id == R.id.nav_signout) {
-
-        }
-
         DrawerLayout drawer =  findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
+
+        if(DBqueries.currentUser != null) {
+
+            int id = item.getItemId();
+            if (id == R.id.nav_my_sweet_spot) {
+                actionBarLogo.setVisibility(View.VISIBLE);
+                invalidateOptionsMenu();
+                setFragment(new HomeFragment(), HOME_FRAGMENT);
+            } else if (id == R.id.nav_my_orders) {
+                goToFragment("My Orders", new MyOrdersFragment(), ORDERS_FRAGMENT);
+            } else if (id == R.id.nav_my_rewards) {
+                goToFragment("My Rewards", new MyRewardsFragment(), REWARDS_FRAGMENT);
+
+            } else if (id == R.id.nav_my_cart) {
+                goToFragment("My Cart", new MyCartFragment(), CART_FRAGMENT);
+            } else if (id == R.id.nav_my_wishlist) {
+                goToFragment("My Wishlist", new MyWishListFragment(), WISHLIST_FRAGMENT);
+            } else if (id == R.id.nav_my_account) {
+                goToFragment("My Account", new MyAccountFragment(), ACCOUNT_FRAGMENT);
+            } else if (id == R.id.nav_signout) {
+
+            }
+            drawer.closeDrawer(GravityCompat.START);
+            return true;
+        }
+        else{
+            drawer.closeDrawer(GravityCompat.START);
+            signInDialog.show();
+            return false;
+        }
     }
 
     private void setFragment(Fragment fragment, int fragmentNo) {

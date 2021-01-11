@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.thesweetspot.MainActivity.showCart;
+import static com.example.thesweetspot.RegisterActivity.setSignUpFragment;
 
 public class ProductDetailsActivity extends AppCompatActivity {
 
@@ -44,7 +45,9 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private static Boolean ALREADY_ADDED_TO_WISH_LIST = false;
 
     private Button buyNowButton;
+    private LinearLayout addToCartButton;
     private Button couponRedeemButton;
+    private LinearLayout couponRedemtionLayout;
 
     private TextView productTitle;
     private TextView productPrice;
@@ -88,6 +91,9 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private static LinearLayout selectedCoupon;
     //////Coupon Dialog
 
+    private Dialog signInDialog;
+
+
     private FirebaseFirestore firebaseFirestore;
 
     @Override
@@ -124,8 +130,9 @@ public class ProductDetailsActivity extends AppCompatActivity {
         ratingsProgressBarContainer = findViewById(R.id.ratings_progress_bar_container);
         totalRatingsFigure = findViewById(R.id.total_ratings_figure);
         averageRating = findViewById(R.id.average_rating);
-
+        addToCartButton = findViewById(R.id.add_to_cart_btn);
         firebaseFirestore = FirebaseFirestore.getInstance();
+        couponRedemtionLayout = findViewById(R.id.coupon_redemption_layout);
 
         final List<String> productImages = new ArrayList<>();
 
@@ -207,14 +214,17 @@ public class ProductDetailsActivity extends AppCompatActivity {
         addToWishListBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(ALREADY_ADDED_TO_WISH_LIST){
-
-                    ALREADY_ADDED_TO_WISH_LIST=false;
-                    addToWishListBtn.setSupportImageTintList(ColorStateList.valueOf(Color.parseColor("#9e9e9e")));
-                }else{
-
-                    ALREADY_ADDED_TO_WISH_LIST=true;
-                    addToWishListBtn.setSupportImageTintList(getResources().getColorStateList(R.color.colorPrimary));
+                if(DBqueries.currentUser == null){
+                    signInDialog.show();
+                }
+                else {
+                    if (ALREADY_ADDED_TO_WISH_LIST) {
+                        ALREADY_ADDED_TO_WISH_LIST = false;
+                        addToWishListBtn.setSupportImageTintList(ColorStateList.valueOf(Color.parseColor("#9e9e9e")));
+                    } else {
+                        ALREADY_ADDED_TO_WISH_LIST = true;
+                        addToWishListBtn.setSupportImageTintList(getResources().getColorStateList(R.color.colorPrimary));
+                    }
                 }
             }
         });
@@ -244,7 +254,11 @@ public class ProductDetailsActivity extends AppCompatActivity {
             rateNowContainer.getChildAt(x).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    setRating(starPosition);
+                    if(DBqueries.currentUser == null){
+                        signInDialog.show();
+                    }else {
+                        setRating(starPosition);
+                    }
                 }
             });
         }
@@ -253,10 +267,28 @@ public class ProductDetailsActivity extends AppCompatActivity {
         buyNowButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent deliveryIntent = new Intent(ProductDetailsActivity.this, DeliveryActivity.class);
-                startActivity(deliveryIntent);
+                if(DBqueries.currentUser == null){
+                    signInDialog.show();
+                }
+                else {
+                    Intent deliveryIntent = new Intent(ProductDetailsActivity.this, DeliveryActivity.class);
+                    startActivity(deliveryIntent);
+                }
             }
         });
+
+        addToCartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(DBqueries.currentUser == null){
+                    signInDialog.show();
+                }
+                else {
+                    //Todo: add to cart
+                }
+            }
+        });
+
 
         ////////coupon dialog redeem
         final Dialog checkCouponPriceDialog = new Dialog(ProductDetailsActivity.this);
@@ -308,6 +340,42 @@ public class ProductDetailsActivity extends AppCompatActivity {
             }
         });
 
+        /////////sign in dialog
+        signInDialog = new Dialog(ProductDetailsActivity.this);
+        signInDialog.setContentView(R.layout.sign_in_dialog);
+        signInDialog.setCancelable(true);
+        signInDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        Button dialogSignInBtn = signInDialog.findViewById(R.id.sign_in_btn);
+        Button dialogSignUpBtn = signInDialog.findViewById(R.id.sign_up_btn);
+
+        final Intent registerIntent = new Intent(ProductDetailsActivity.this, RegisterActivity.class);
+        dialogSignInBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SignInFragment.disableCloseButton = true;
+                SignUpFragment.disableCloseButton = true;
+                signInDialog.dismiss();
+                setSignUpFragment = false;
+                startActivity(registerIntent);
+            }
+        });
+        dialogSignUpBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SignInFragment.disableCloseButton = true;
+                SignUpFragment.disableCloseButton = true;
+                signInDialog.dismiss();
+                setSignUpFragment = true;
+                startActivity(registerIntent);
+            }
+        });
+        /////////sign in dialog
+
+        if(DBqueries.currentUser == null){
+            couponRedemtionLayout.setVisibility(View.GONE);
+        }
+
     }
 
     public static void showDialogRecyclerView(){
@@ -349,9 +417,14 @@ public class ProductDetailsActivity extends AppCompatActivity {
         }else if(id == R.id.main_search_icon){
             return true;
         }else if(id == R.id.main_cart_icon){
-            Intent cartIntent = new Intent(ProductDetailsActivity.this, MainActivity.class);
-            showCart = true;
-            startActivity(cartIntent);
+            if(DBqueries.currentUser == null){
+                signInDialog.show();
+            }
+            else {
+                Intent cartIntent = new Intent(ProductDetailsActivity.this, MainActivity.class);
+                showCart = true;
+                startActivity(cartIntent);
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);
