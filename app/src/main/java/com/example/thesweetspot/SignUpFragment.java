@@ -234,21 +234,40 @@ public class SignUpFragment extends Fragment {
                            public void onComplete(@NonNull Task<AuthResult> task) {
                                if(task.isSuccessful()){
 
-                                   Map<Object,String> userdata = new HashMap<>();
+                                   Map<String,Object> userdata = new HashMap<>();
                                    userdata.put("fullname",fullname.getText().toString());
 
                                    firebaseFirestore.collection("USERS")
-                                           .add(userdata)
-                                           .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                           .document(firebaseAuth.getUid())
+                                           .set(userdata)
+                                           .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                @Override
-                                               public void onComplete(@NonNull Task<DocumentReference> task) {
+                                               public void onComplete(@NonNull Task<Void> task) {
                                                    if(task.isSuccessful()){
-                                                       mainIntent();
+                                                       Map<String, Object> listSize = new HashMap<>();
+                                                       listSize.put("list_size",(long)0);
+
+                                                       firebaseFirestore.collection("USERS")
+                                                               .document(firebaseAuth.getUid())
+                                                               .collection("USER_DATA")
+                                                               .document("MY_WISHLIST")
+                                                               .set(listSize).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                           @Override
+                                                           public void onComplete(@NonNull Task<Void> task) {
+                                                               if(task.isSuccessful()){
+                                                                   mainIntent();
+                                                               }
+                                                               else{
+                                                                   progressBar.setVisibility(View.INVISIBLE);
+                                                                   signUpBtn.setEnabled(true);
+                                                                   signUpBtn.setTextColor(getResources().getColor(R.color.colorAccent));
+                                                                   String error = task.getException().getMessage();
+                                                                   Toast.makeText(getActivity(),error, Toast.LENGTH_SHORT).show();
+                                                               }
+                                                           }
+                                                       });
                                                    }
                                                    else{
-                                                       progressBar.setVisibility(View.INVISIBLE);
-                                                       signUpBtn.setEnabled(true);
-                                                       signUpBtn.setTextColor(getResources().getColor(R.color.colorAccent));
                                                        String error = task.getException().getMessage();
                                                        Toast.makeText(getActivity(),error, Toast.LENGTH_SHORT).show();
                                                    }
