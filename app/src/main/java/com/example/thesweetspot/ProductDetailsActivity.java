@@ -96,6 +96,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     //////Coupon Dialog
 
     private Dialog signInDialog;
+    private Dialog loadingDialog;
 
     private FirebaseUser currentUser;
     private String productID;
@@ -138,6 +139,15 @@ public class ProductDetailsActivity extends AppCompatActivity {
         addToCartButton = findViewById(R.id.add_to_cart_btn);
         firebaseFirestore = FirebaseFirestore.getInstance();
         couponRedemtionLayout = findViewById(R.id.coupon_redemption_layout);
+
+        ///////loading dialog
+        loadingDialog = new Dialog(ProductDetailsActivity.this);
+        loadingDialog.setContentView(R.layout.loading_progress_dialog);
+        loadingDialog.setCancelable(false);
+        loadingDialog.getWindow().setBackgroundDrawable(getDrawable(R.drawable.slider_background));
+        loadingDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        loadingDialog.show();
+        ///////loading dialog
 
         final List<String> productImages = new ArrayList<>();
 
@@ -207,7 +217,11 @@ public class ProductDetailsActivity extends AppCompatActivity {
                             productDetailsViewPager.setAdapter(new ProductDetailsAdapter(getSupportFragmentManager(),0,productDetailsTabLayout.getTabCount(), productDescription, productOtherDetails, productSpecificationModelList));
 
                             if (DBqueries.wishList.size() == 0){
-                                DBqueries.loadWishList(ProductDetailsActivity.this);
+                                DBqueries.loadWishList(ProductDetailsActivity.this, loadingDialog);
+
+                            }
+                            else {
+                                loadingDialog.dismiss();
                             }
 
                             if (DBqueries.wishList.contains(productID)){
@@ -218,6 +232,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
                             }
                         }
                         else{
+                            loadingDialog.dismiss();
                             String error = task.getException().getMessage();
                             Toast.makeText(ProductDetailsActivity.this, error, Toast.LENGTH_SHORT).show();
                         }
