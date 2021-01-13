@@ -1,5 +1,6 @@
 package com.example.thesweetspot;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,8 @@ public class MyWishListFragment extends Fragment {
     }
 
     private RecyclerView wishListRecyclerView;
+    private Dialog loadingDialog;
+    public static WishListAdapter wishListAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -31,9 +34,24 @@ public class MyWishListFragment extends Fragment {
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
         wishListRecyclerView.setLayoutManager(linearLayoutManager);
 
-        List<WishListModel> wishListModelList = new ArrayList<>();
+        ///////loading dialog
+        loadingDialog = new Dialog(getContext());
+        loadingDialog.setContentView(R.layout.loading_progress_dialog);
+        loadingDialog.setCancelable(false);
+        loadingDialog.getWindow().setBackgroundDrawable(getContext().getDrawable(R.drawable.slider_background));
+        loadingDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        loadingDialog.show();
+        ///////loading dialog
 
-        WishListAdapter wishListAdapter = new WishListAdapter(wishListModelList, true);
+        if(DBqueries.wishListModelList.size()==0){
+            DBqueries.wishList.clear();
+            DBqueries.loadWishList(getContext(),loadingDialog, true);
+        }
+        else {
+            loadingDialog.dismiss();
+        }
+
+        wishListAdapter = new WishListAdapter(DBqueries.wishListModelList, true);
         wishListRecyclerView.setAdapter(wishListAdapter);
         wishListAdapter.notifyDataSetChanged();
 
