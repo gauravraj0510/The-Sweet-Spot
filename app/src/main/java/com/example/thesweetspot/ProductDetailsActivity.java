@@ -81,7 +81,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
 
     //////// rating layout
-    private LinearLayout rateNowContainer;
+    public static LinearLayout rateNowContainer;
     private TextView totalRatings;
     private TextView totalRatingsFigure;
     private LinearLayout ratingsNumberContainer;
@@ -220,12 +220,15 @@ public class ProductDetailsActivity extends AppCompatActivity {
                             productDetailsViewPager.setAdapter(new ProductDetailsAdapter(getSupportFragmentManager(),0,productDetailsTabLayout.getTabCount(), productDescription, productOtherDetails, productSpecificationModelList));
 
                             if(currentUser != null) {
+                                if(DBqueries.myRatings.size() == 0){
+                                    DBqueries.loadRatingList(ProductDetailsActivity.this);
+                                }
                                 if (DBqueries.wishList.size() == 0) {
                                     DBqueries.loadWishList(ProductDetailsActivity.this, loadingDialog, false);
-
                                 } else {
                                     loadingDialog.dismiss();
                                 }
+
                             }
                             else{
                                 loadingDialog.dismiss();
@@ -478,12 +481,15 @@ public class ProductDetailsActivity extends AppCompatActivity {
         }
 
         if(currentUser != null) {
+            if(DBqueries.myRatings.size() == 0){
+                DBqueries.loadRatingList(ProductDetailsActivity.this);
+            }
             if (DBqueries.wishList.size() == 0) {
                 DBqueries.loadWishList(ProductDetailsActivity.this, loadingDialog, false);
-
             } else {
                 loadingDialog.dismiss();
             }
+
         }
         else{
             loadingDialog.dismiss();
@@ -509,7 +515,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
         }
     }
 
-    private void setRating(int starPosition) {
+    public static void setRating(int starPosition) {
         for(int x = 0; x<rateNowContainer.getChildCount();x++){
             ImageView starBtn = (ImageView) rateNowContainer.getChildAt(x);
             starBtn.setImageTintList(ColorStateList.valueOf(Color.parseColor("#bebebe")));
