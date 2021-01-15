@@ -43,6 +43,8 @@ import static com.example.thesweetspot.RegisterActivity.setSignUpFragment;
 
 public class ProductDetailsActivity extends AppCompatActivity {
 
+    public static boolean running_wishlist_query = false;
+
     private ViewPager productImagesViewPager;
     private TabLayout viewPagerIndicator;
     public static FloatingActionButton addToWishListBtn;
@@ -254,65 +256,66 @@ public class ProductDetailsActivity extends AppCompatActivity {
                     signInDialog.show();
                 }
                 else {
-                    addToWishListBtn.setEnabled(false);
-                    if (ALREADY_ADDED_TO_WISH_LIST) {
-                        int index = DBqueries.wishList.indexOf(productID);
-                        DBqueries.removeFromWishList(index,ProductDetailsActivity.this);
-                        addToWishListBtn.setSupportImageTintList(ColorStateList.valueOf(Color.parseColor("#9e9e9e")));
-                    } else {
-                        addToWishListBtn.setSupportImageTintList(getResources().getColorStateList(R.color.colorPrimary));
-                        Map<String,Object> addProduct = new HashMap<>();
-                        addProduct.put("product_ID_"+DBqueries.wishList.size(), productID);
+                    if(!running_wishlist_query) {
+                        running_wishlist_query = true;
+                        if (ALREADY_ADDED_TO_WISH_LIST) {
+                            int index = DBqueries.wishList.indexOf(productID);
+                            DBqueries.removeFromWishList(index, ProductDetailsActivity.this);
+                            addToWishListBtn.setSupportImageTintList(ColorStateList.valueOf(Color.parseColor("#9e9e9e")));
+                        } else {
+                            addToWishListBtn.setSupportImageTintList(getResources().getColorStateList(R.color.colorPrimary));
+                            Map<String, Object> addProduct = new HashMap<>();
+                            addProduct.put("product_ID_" + DBqueries.wishList.size(), productID);
 
-                        firebaseFirestore.collection("USERS").document(currentUser.getUid()).collection("USER_DATA").document("MY_WISHLIST")
-                                .update(addProduct).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()){
-                                    Map<String,Object> updateListSize = new HashMap<>();
-                                    updateListSize.put("list_size", (long)(DBqueries.wishList.size() + 1));
+                            firebaseFirestore.collection("USERS").document(currentUser.getUid()).collection("USER_DATA").document("MY_WISHLIST")
+                                    .update(addProduct).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Map<String, Object> updateListSize = new HashMap<>();
+                                        updateListSize.put("list_size", (long) (DBqueries.wishList.size() + 1));
 
-                                    firebaseFirestore.collection("USERS").document(currentUser.getUid()).collection("USER_DATA").document("MY_WISHLIST")
-                                            .update(updateListSize).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()){
+                                        firebaseFirestore.collection("USERS").document(currentUser.getUid()).collection("USER_DATA").document("MY_WISHLIST")
+                                                .update(updateListSize).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
 
-                                                if(DBqueries.wishListModelList.size() != 0){
-                                                    DBqueries.wishListModelList.add(new WishListModel(
-                                                            documentSnapshot.get("product_image_1").toString(),
-                                                            documentSnapshot.get("product_title").toString(),
-                                                            (long) documentSnapshot.get("free_coupons"),
-                                                            documentSnapshot.get("average_rating").toString(),
-                                                            (long) documentSnapshot.get("total_ratings"),
-                                                            documentSnapshot.get("product_price" ).toString(),
-                                                            documentSnapshot.get("cut_price" ).toString(),
-                                                            (boolean)documentSnapshot.get("COD" )
-                                                    ));
+                                                    if (DBqueries.wishListModelList.size() != 0) {
+                                                        DBqueries.wishListModelList.add(new WishListModel(
+                                                                productID,
+                                                                documentSnapshot.get("product_image_1").toString(),
+                                                                documentSnapshot.get("product_title").toString(),
+                                                                (long) documentSnapshot.get("free_coupons"),
+                                                                documentSnapshot.get("average_rating").toString(),
+                                                                (long) documentSnapshot.get("total_ratings"),
+                                                                documentSnapshot.get("product_price").toString(),
+                                                                documentSnapshot.get("cut_price").toString(),
+                                                                (boolean) documentSnapshot.get("COD")
+                                                        ));
+                                                    }
+
+                                                    ALREADY_ADDED_TO_WISH_LIST = true;
+                                                    addToWishListBtn.setSupportImageTintList(getResources().getColorStateList(R.color.colorPrimary));
+                                                    DBqueries.wishList.add(productID);
+                                                    Toast.makeText(ProductDetailsActivity.this, "Added to wishlist!", Toast.LENGTH_SHORT).show();
+                                                } else {
+                                                    addToWishListBtn.setSupportImageTintList(ColorStateList.valueOf(Color.parseColor("#9e9e9e")));
+                                                    String error = task.getException().getMessage();
+                                                    Toast.makeText(ProductDetailsActivity.this, error, Toast.LENGTH_SHORT).show();
                                                 }
-
-                                                ALREADY_ADDED_TO_WISH_LIST = true;
-                                                addToWishListBtn.setSupportImageTintList(getResources().getColorStateList(R.color.colorPrimary));
-                                                DBqueries.wishList.add(productID);
-                                                Toast.makeText(ProductDetailsActivity.this, "Added to wishlist!", Toast.LENGTH_SHORT).show();
+                                                running_wishlist_query = false;
                                             }
-                                            else{
-                                                addToWishListBtn.setSupportImageTintList(ColorStateList.valueOf(Color.parseColor("#9e9e9e")));
-                                                String error = task.getException().getMessage();
-                                                Toast.makeText(ProductDetailsActivity.this, error, Toast.LENGTH_SHORT).show();
-                                            }
-                                            addToWishListBtn.setEnabled(true);
-                                        }
-                                    });
+                                        });
+                                    } else {
+                                        running_wishlist_query = false;
+                                        String error = task.getException().getMessage();
+                                        Toast.makeText(ProductDetailsActivity.this, error, Toast.LENGTH_SHORT).show();
+                                    }
                                 }
-                                else{
-                                    addToWishListBtn.setEnabled(true);
-                                    String error = task.getException().getMessage();
-                                    Toast.makeText(ProductDetailsActivity.this, error, Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
+                            });
 
+                        }
                     }
                 }
             }

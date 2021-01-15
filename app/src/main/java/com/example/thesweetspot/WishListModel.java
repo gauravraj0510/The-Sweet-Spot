@@ -3,6 +3,7 @@ package com.example.thesweetspot;
 public class WishListModel {
 
     private String productImage;
+    private String productID;
     private String productTitle;
     private long freeCoupons;
     private String rating;
@@ -11,7 +12,8 @@ public class WishListModel {
     private String cutPrice;
     private boolean COD;
 
-    public WishListModel(String productImage, String productTitle, long freeCoupons, String rating, long totalRatings, String productPrice, String cutPrice, boolean COD) {
+    public WishListModel(String productID, String productImage, String productTitle, long freeCoupons, String rating, long totalRatings, String productPrice, String cutPrice, boolean COD) {
+        this.productID = productID;
         this.productImage = productImage;
         this.productTitle = productTitle;
         this.freeCoupons = freeCoupons;
@@ -20,6 +22,14 @@ public class WishListModel {
         this.productPrice = productPrice;
         this.cutPrice = cutPrice;
         this.COD = COD;
+    }
+
+    public String getProductID() {
+        return productID;
+    }
+
+    public void setProductID(String productID) {
+        this.productID = productID;
     }
 
     public String getProductImage() {

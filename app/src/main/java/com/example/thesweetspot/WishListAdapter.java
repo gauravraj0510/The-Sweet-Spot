@@ -40,6 +40,7 @@ public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
+        String productId = wishListModelList.get(position).getProductID();
         String resource = wishListModelList.get(position).getProductImage();
         String title = wishListModelList.get(position).getProductTitle();
         long freeCoupon = wishListModelList.get(position).getFreeCoupons();
@@ -49,7 +50,7 @@ public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.ViewHo
         String cutPrice = wishListModelList.get(position).getCutPrice();
         boolean paymentMethod = wishListModelList.get(position).isCOD();
 
-        holder.setData(resource,title,freeCoupon,ratings,totalRatings,productPrice,cutPrice,paymentMethod,position);
+        holder.setData(productId,resource,title,freeCoupon,ratings,totalRatings,productPrice,cutPrice,paymentMethod,position);
         if (lastPosition < position) {
             Animation animation = AnimationUtils.loadAnimation(holder.itemView.getContext(), R.anim.fade_in);
             holder.itemView.setAnimation(animation);
@@ -91,7 +92,7 @@ public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.ViewHo
             deleteBtn = itemView.findViewById(R.id.delete_button);
         }
 
-        private void setData(String resource, String title, long freeCouponsNo, String averageRate, long totalRatingsNo, String price, String cutPriceValue, boolean COD, final int index){
+        private void setData(final String productId, String resource, String title, long freeCouponsNo, String averageRate, long totalRatingsNo, String price, String cutPriceValue, boolean COD, final int index){
             Glide.with(itemView.getContext()).load(resource).apply(new RequestOptions().placeholder(R.drawable.placeholder_small)).into(productImage);
             productTitle.setText(title);
             if(freeCouponsNo != 0){
@@ -125,14 +126,17 @@ public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.ViewHo
             deleteBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    deleteBtn.setEnabled(false);
-                    DBqueries.removeFromWishList(index, itemView.getContext());
+                    if(!ProductDetailsActivity.running_wishlist_query) {
+                        ProductDetailsActivity.running_wishlist_query = true;
+                        DBqueries.removeFromWishList(index, itemView.getContext());
+                    }
                 }
             });
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent prodDetailsIntent = new Intent(itemView.getContext(), ProductDetailsActivity.class);
+                    prodDetailsIntent.putExtra("PRODUCT_ID", productId);
                     itemView.getContext().startActivity(prodDetailsIntent);
                 }
             });
