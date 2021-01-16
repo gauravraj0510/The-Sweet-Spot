@@ -287,7 +287,8 @@ public class DBqueries {
                         myRatings.add((long)task.getResult().get("rating_"+x));
 
                         if(task.getResult().get("product_ID_"+x).equals(ProductDetailsActivity.productID) && ProductDetailsActivity.rateNowContainer != null){
-                            ProductDetailsActivity.setRating(Integer.parseInt(String.valueOf((long)task.getResult().get("rating_"+x)))-1);
+                            ProductDetailsActivity.initialRating = Integer.parseInt(String.valueOf((long)task.getResult().get("rating_"+x)))-1;
+                            ProductDetailsActivity.setRating(ProductDetailsActivity.initialRating);
                         }
                     }
                 }
