@@ -172,6 +172,7 @@
             android:layout_height="30dp"
             android:layout_weight="1"
             android:gravity="center"
+            android:textSize="12sp"
             android:text="Check price after coupon redemption!"
             android:textAlignment="center"
             android:textColor="@color/colorAccent" />
