@@ -12,6 +12,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+
 import java.util.List;
 
 public class CartAdapter extends RecyclerView.Adapter {
@@ -56,13 +59,14 @@ public class CartAdapter extends RecyclerView.Adapter {
 
         switch (cartItemModelList.get(position).getType()){
             case CartItemModel.CART_ITEM:
-                int resource = cartItemModelList.get(position).getProductImage();
+                String productID = cartItemModelList.get(position).getProductID();
+                String resource = cartItemModelList.get(position).getProductImage();
                 String title=cartItemModelList.get(position).getProductTitle();
-                int freeCoupons=cartItemModelList.get(position).getFreeCoupons();
+                Long freeCoupons=cartItemModelList.get(position).getFreeCoupons();
                 String productPrice=cartItemModelList.get(position).getProductPrice();
                 String cutPrice=cartItemModelList.get(position).getCutPrice();
-                int offersApplied=cartItemModelList.get(position).getOffersApplied();
-                ((CartItemViewHolder)holder).setItemDetails(resource,title,freeCoupons,productPrice,cutPrice,offersApplied);
+                Long offersApplied=cartItemModelList.get(position).getOffersApplied();
+                ((CartItemViewHolder)holder).setItemDetails(productID,resource,title,freeCoupons,productPrice,cutPrice,offersApplied);
                 break;
 
             case CartItemModel.TOTAL_AMOUNT:
@@ -109,8 +113,8 @@ public class CartAdapter extends RecyclerView.Adapter {
             productQuantity=itemView.findViewById(R.id.product_quantity);
         }
 
-        private void setItemDetails(int resource, String title, int freeCouponsNo, String productPriceText, String cutPriceText, int offersAppliedNo){
-            productImage.setImageResource(resource);
+        private void setItemDetails(String productID, String resource, String title, Long freeCouponsNo, String productPriceText, String cutPriceText, Long offersAppliedNo){
+            Glide.with(itemView.getContext()).load(resource).apply(new RequestOptions().placeholder(R.drawable.placeholder_small)).into(productImage);
             productTitle.setText(title);
             if(freeCouponsNo > 0){
                 freeCouponIcon.setVisibility(View.VISIBLE);
@@ -124,8 +128,8 @@ public class CartAdapter extends RecyclerView.Adapter {
                 freeCouponIcon.setVisibility(View.INVISIBLE);
                 freeCoupons.setVisibility(View.INVISIBLE);
             }
-            productPrice.setText(productPriceText);
-            cutPrice.setText(cutPriceText);
+            productPrice.setText("Rs."+productPriceText+"/-");
+            cutPrice.setText("Rs."+cutPriceText+"/-");
             if(offersAppliedNo > 0){
                 offersApplied.setVisibility(View.VISIBLE);
                 offersApplied.setText(offersAppliedNo+ " offers applied!");
