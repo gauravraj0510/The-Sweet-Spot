@@ -2,13 +2,12 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/remove_item_button"
-    android:background="@color/colorAccent"
-    android:elevation="3dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:layout_marginTop="4dp"
     android:layout_marginBottom="4dp"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:background="@color/colorAccent"
+    android:elevation="3dp">
 
     <ImageView
         android:id="@+id/product_image"
@@ -121,8 +120,8 @@
         android:background="@drawable/border_background"
         android:backgroundTint="#000000"
         android:drawableEnd="@drawable/down_arrow"
-        android:drawableTint="#000000"
         android:drawablePadding="8dp"
+        android:drawableTint="#000000"
         android:padding="3dp"
         android:text="Qty: 1"
         android:textColor="#000000"
@@ -147,9 +146,9 @@
             android:id="@+id/tv_coupon_redemption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_weight="1"
             android:gravity="center"
-            android:layout_gravity="center"
             android:text="Check price after coupon redemption!"
             android:textAlignment="center"
             android:textColor="@color/colorAccent"
@@ -167,12 +166,13 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/remove_item_button"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_marginTop="1dp"
-        android:orientation="horizontal"
         android:background="@color/colorAccent"
         android:gravity="center"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/coupon_redemption_layout">
@@ -180,11 +180,11 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="Remove Item"
-            android:gravity="center"
             android:drawableStart="@drawable/bin_icon"
+            android:drawablePadding="4dp"
             android:drawableTint="#000000"
-            android:drawablePadding="4dp"/>
+            android:gravity="center"
+            android:text="Remove Item" />
 
     </LinearLayout>
 

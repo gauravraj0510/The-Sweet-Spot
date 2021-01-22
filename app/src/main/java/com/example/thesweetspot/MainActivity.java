@@ -17,6 +17,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -140,6 +141,7 @@ implements NavigationView.OnNavigationItemSelectedListener {
         else{
             navigationView.getMenu().getItem(navigationView.getMenu().size() -1).setEnabled(true);
         }
+        invalidateOptionsMenu();
     }
 
     @Override
@@ -173,6 +175,32 @@ implements NavigationView.OnNavigationItemSelectedListener {
         if(currentFragment == HOME_FRAGMENT) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             getMenuInflater().inflate(R.menu.main, menu);
+
+            MenuItem cartItem = menu.findItem(R.id.main_cart_icon);
+            if(DBqueries.cartList.size() > 0){
+                cartItem.setActionView(R.layout.badge_layout);
+                ImageView badgeIcon = cartItem.getActionView().findViewById(R.id.badge_icon);
+                badgeIcon.setImageResource(R.drawable.cart_white_icon);
+                TextView badgeCount = cartItem.getActionView().findViewById(R.id.badge_count);
+                if(DBqueries.cartList.size() < 99) {
+                    badgeCount.setText(String.valueOf(DBqueries.cartList.size()));
+                }
+                else badgeCount.setText("99");
+
+                cartItem.getActionView().setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(currentUser == null) {
+                            signInDialog.show();
+                        }else {
+                            goToFragment("My Cart", new MyCartFragment(), CART_FRAGMENT);
+                        }
+                    }
+                });
+            }
+            else {
+                cartItem.setActionView(null);
+            }
         }
         return true;
     }
