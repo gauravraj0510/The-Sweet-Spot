@@ -30,6 +30,8 @@ public class MyCartFragment extends Fragment {
     private Dialog loadingDialog;
     public static CartAdapter cartAdapter;
 
+    private TextView totalAmount;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -37,6 +39,7 @@ public class MyCartFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_my_cart, container, false);
         continueButton = view.findViewById(R.id.cart_continue_btn);
+        totalAmount = view.findViewById(R.id.total_cart_amount);
 
         ///////loading dialog
         loadingDialog = new Dialog(getContext());
@@ -60,15 +63,17 @@ public class MyCartFragment extends Fragment {
             loadingDialog.dismiss();
         }
 
-        cartAdapter = new CartAdapter(DBqueries.cartItemModelList);
+        cartAdapter = new CartAdapter(DBqueries.cartItemModelList, totalAmount);
         cartItemsRecyclerView.setAdapter(cartAdapter);
         cartAdapter.notifyDataSetChanged();
 
         continueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent deliveryIntent = new Intent(getContext(), AddAddressActivity.class);
-                getContext().startActivity(deliveryIntent);
+
+                loadingDialog.show();
+                DBqueries.loadAddresses(getContext(), loadingDialog);
+
             }
         });
 
