@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
@@ -66,6 +67,9 @@ implements NavigationView.OnNavigationItemSelectedListener {
     private Window window;
     private Toolbar toolbar;
 
+    private int scrollFlags;
+    private AppBarLayout.LayoutParams params;
+
     private FirebaseUser currentUser;
 
     public static DrawerLayout drawer;
@@ -81,6 +85,8 @@ implements NavigationView.OnNavigationItemSelectedListener {
 
         window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
+        scrollFlags = params.getScrollFlags();
 
         drawer = findViewById(R.id.drawer_layout);
 
@@ -247,6 +253,10 @@ implements NavigationView.OnNavigationItemSelectedListener {
         setFragment(fragment, fragmentNo);
         if(fragmentNo == CART_FRAGMENT) {
             navigationView.setCheckedItem(R.id.nav_my_cart);
+            params.setScrollFlags(0);
+        }
+        else {
+            params.setScrollFlags(scrollFlags);
         }
     }
 
