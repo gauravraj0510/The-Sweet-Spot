@@ -192,7 +192,7 @@ implements NavigationView.OnNavigationItemSelectedListener {
 
                 if(currentUser != null){
                     if (DBqueries.cartList.size() == 0) {
-                        DBqueries.loadCartList(MainActivity.this, new Dialog(MainActivity.this), false, badgeCount);
+                        DBqueries.loadCartList(MainActivity.this, new Dialog(MainActivity.this), false, badgeCount, new TextView(MainActivity.this));
                     }
                     else {
                         badgeCount.setVisibility(View.VISIBLE);
@@ -251,7 +251,7 @@ implements NavigationView.OnNavigationItemSelectedListener {
         actionBarLogo.setVisibility(View.GONE);
         invalidateOptionsMenu();
         setFragment(fragment, fragmentNo);
-        if(fragmentNo == CART_FRAGMENT) {
+        if(fragmentNo == CART_FRAGMENT || showCart) {
             navigationView.setCheckedItem(R.id.nav_my_cart);
             params.setScrollFlags(0);
         }
@@ -260,40 +260,46 @@ implements NavigationView.OnNavigationItemSelectedListener {
         }
     }
 
+    MenuItem menuItem;
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         DrawerLayout drawer =  findViewById(R.id.drawer_layout);
-
+        drawer.closeDrawer(GravityCompat.START);
+        menuItem = item;
         if(currentUser != null) {
 
-            int id = item.getItemId();
-            if (id == R.id.nav_my_sweet_spot) {
-                actionBarLogo.setVisibility(View.VISIBLE);
-                invalidateOptionsMenu();
-                setFragment(new HomeFragment(), HOME_FRAGMENT);
-            } else if (id == R.id.nav_my_orders) {
-                goToFragment("My Orders", new MyOrdersFragment(), ORDERS_FRAGMENT);
-            } else if (id == R.id.nav_my_rewards) {
-                goToFragment("My Rewards", new MyRewardsFragment(), REWARDS_FRAGMENT);
+            drawer.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
+                @Override
+                public void onDrawerClosed(View drawerView) {
+                    super.onDrawerClosed(drawerView);
+                    int id = menuItem.getItemId();
+                    if (id == R.id.nav_my_sweet_spot) {
+                        actionBarLogo.setVisibility(View.VISIBLE);
+                        invalidateOptionsMenu();
+                        setFragment(new HomeFragment(), HOME_FRAGMENT);
+                    } else if (id == R.id.nav_my_orders) {
+                        goToFragment("My Orders", new MyOrdersFragment(), ORDERS_FRAGMENT);
+                    } else if (id == R.id.nav_my_rewards) {
+                        goToFragment("My Rewards", new MyRewardsFragment(), REWARDS_FRAGMENT);
 
-            } else if (id == R.id.nav_my_cart) {
-                goToFragment("My Cart", new MyCartFragment(), CART_FRAGMENT);
-            } else if (id == R.id.nav_my_wishlist) {
-                goToFragment("My Wishlist", new MyWishListFragment(), WISHLIST_FRAGMENT);
-            } else if (id == R.id.nav_my_account) {
-                goToFragment("My Account", new MyAccountFragment(), ACCOUNT_FRAGMENT);
-            } else if (id == R.id.nav_signout) {
-                FirebaseAuth.getInstance().signOut();
-                DBqueries.clearData();
-                Intent registerIntent = new Intent(MainActivity.this, RegisterActivity.class);
-                startActivity(registerIntent);
-                finish();
-            }
-            drawer.closeDrawer(GravityCompat.START);
+                    } else if (id == R.id.nav_my_cart) {
+                        goToFragment("My Cart", new MyCartFragment(), CART_FRAGMENT);
+                    } else if (id == R.id.nav_my_wishlist) {
+                        goToFragment("My Wishlist", new MyWishListFragment(), WISHLIST_FRAGMENT);
+                    } else if (id == R.id.nav_my_account) {
+                        goToFragment("My Account", new MyAccountFragment(), ACCOUNT_FRAGMENT);
+                    } else if (id == R.id.nav_signout) {
+                        FirebaseAuth.getInstance().signOut();
+                        DBqueries.clearData();
+                        Intent registerIntent = new Intent(MainActivity.this, RegisterActivity.class);
+                        startActivity(registerIntent);
+                        finish();
+                    }
+                }
+            });
             return true;
         }
         else{
-            drawer.closeDrawer(GravityCompat.START);
             signInDialog.show();
             return false;
         }
