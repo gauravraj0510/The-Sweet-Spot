@@ -246,7 +246,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
                                 setRating(initialRating);
                             }
 
-                            if (DBqueries.wishList.contains(productID)) {
+                            if (DBqueries.cartList.contains(productID)) {
                                 ALREADY_ADDED_TO_CART_LIST = true;
                             } else {
                                 ALREADY_ADDED_TO_CART_LIST = false;
