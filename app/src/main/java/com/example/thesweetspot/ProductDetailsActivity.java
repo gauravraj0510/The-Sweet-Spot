@@ -438,12 +438,13 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
                                     updateRating.put((initialRating + 1) + "_star", Long.parseLong(oldRating.getText().toString()) - 1);
                                     updateRating.put((starPosition + 1) + "_star", Long.parseLong(finalRating.getText().toString()) + 1);
-                                    updateRating.put("average_rating", calculateAverageRating((long) starPosition + 1, false));
+                                    updateRating.put("average_rating", calculateAverageRating((long) starPosition - initialRating, true));
+
 
                                 } else {
 
                                     updateRating.put((starPosition + 1) + "_star", (long) documentSnapshot.get((starPosition + 1) + "_star") + 1);
-                                    updateRating.put("average_rating", calculateAverageRating((long) starPosition - initialRating, true));
+                                    updateRating.put("average_rating", calculateAverageRating((long) starPosition +1, false));
                                     updateRating.put("total_ratings", (long) documentSnapshot.get("total_ratings") + 1);
 
                                 }
