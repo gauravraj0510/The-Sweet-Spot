@@ -3,6 +3,7 @@ package com.example.thesweetspot;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -33,6 +34,9 @@ public class DeliveryActivity extends AppCompatActivity {
     private Dialog loadingDialog;
     private Dialog paymentMethodDialog;
     private ImageButton paytm;
+    private ConstraintLayout orderConfirmationLayout;
+    private ImageButton continueShoppingBtn;
+    private TextView orderId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +56,9 @@ public class DeliveryActivity extends AppCompatActivity {
         fullAddress = findViewById(R.id.address);
         pinCode = findViewById(R.id.pincode);
         continueBtn = findViewById(R.id.cart_continue_btn);
+        orderConfirmationLayout = findViewById(R.id.order_confirmation_layout);
+        continueShoppingBtn = findViewById(R.id.continue_shopping_btn);
+        orderId = findViewById(R.id.order_id);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
